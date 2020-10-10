@@ -1,9 +1,12 @@
 ''' PetraBot Telegram bot logic '''
 import os
+import sys
 import subprocess
 from datetime import datetime, timezone
 import telebot
 import httpx
+import itertools
+import proxyscrape
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime
@@ -13,8 +16,12 @@ from sqlalchemy import create_engine
 ROOTDIR = os.path.dirname(os.path.abspath(__file__))
 API_TOKEN = '1067546684:AAEyYPuY1m9cIQ7OMVux71rBy6mS6pC9EAg'
 BOT = telebot.TeleBot(API_TOKEN)
+PROXYNUM = 32
 
-STATIC_PROXY_LIST = ['http://bot:qwepasdlzxcm@3.127.50.231:9000']
+if sys.platform == 'win32':
+    WIN32 = True
+else:
+    WIN32 = False
 
 START_MESSAGE = '''
 Hi there, I am Kamenka SU Bot.
@@ -45,6 +52,22 @@ ENGINE = create_engine(f'sqlite:///petrabot.db', echo=False)
 BASE.metadata.create_all(ENGINE)
 SESSION = sessionmaker(bind=ENGINE)()
 
+collector = proxyscrape.create_collector(
+    'default', 'https', refresh_interval=10)
+
+
+def get_proxy_scrape(num):
+    ''' proxy scraper '''
+    proxy = collector.get_proxies({'anonymous': True})
+    proxy_dict = []
+    for _ in proxy[:num]:
+        proxy_item = {'http': 'http://' + _[0] + ':' + _[1]}
+        proxy_dict.append(proxy_item)
+    return proxy_dict
+
+
+proxy_loop_iterator = itertools.cycle(get_proxy_scrape(PROXYNUM))
+
 
 def push_to_db(message, answer=None):
     ''' save username,query and BOT answer (optionaly) into db '''
@@ -59,12 +82,15 @@ def push_to_db(message, answer=None):
 
 def finder(uid, cmd=''):
     ''' find fortune via shell subprocess script '''
-    try:
-        fortune = subprocess.check_output(
-            ['%s/finder.sh' % ROOTDIR, '%s' % uid, '%s' % cmd.lower()])
-    except subprocess.SubprocessError:
-        fortune = subprocess.check_output(
-            ['/usr/games/fortune', '-a', '/usr/share/games/fortunes/'])
+    if not WIN32:
+        try:
+            fortune = subprocess.check_output(
+                ['%s/finder.sh' % ROOTDIR, '%s' % uid, '%s' % cmd.lower()])
+        except subprocess.SubprocessError:
+            fortune = subprocess.check_output(
+                ['/usr/games/fortune', '-a', '/usr/share/games/fortunes/'])
+    else:
+        fortune = b'This is Windows OS. No fortune found...'
     return fortune
 
 
@@ -72,7 +98,9 @@ def get_face():
     ''' html response getter '''
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; YandexMetrika/2.0; \
                 +http://yandex.com/bots yabs01)'}
-    with httpx.Client(proxies=STATIC_PROXY_LIST[0], headers=headers, timeout=10.0) as sess:
+    proxy = next(proxy_loop_iterator, None)
+    print(f'{proxy=}')
+    with httpx.Client(proxies=proxy, headers=headers, timeout=10.0) as sess:
         return sess.get(url='https://thispersondoesnotexist.com/image').content
 
 
@@ -81,11 +109,9 @@ def send_welcome(message):
     ''' BOT commands logic '''
     answer = None
     if message.text == '/start':
-        BOT.reply_to(
-            message, START_MESSAGE)
+        BOT.reply_to(message, START_MESSAGE)
     elif message.text == '/help':
-        BOT.reply_to(
-            message, HELP_MESSAGE)
+        BOT.reply_to(message, HELP_MESSAGE)
     elif message.text == '/stop':
         BOT.reply_to(message, 'Z-z-z-z...')
     elif message.text == '/face':
