@@ -30,7 +30,7 @@ HELP_MESSAGE = '''
 Commands:
 /face -- get fake face
 /talk -- get random cookie text
-Chat with BOT to get some contex fortunes...
+Or just chat with BOT to get some fun...
 '''
 
 BASE = declarative_base()
