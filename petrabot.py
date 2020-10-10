@@ -104,7 +104,7 @@ def get_face():
         return sess.get(url='https://thispersondoesnotexist.com/image').content
 
 
-@BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'fortune'])
+@BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk'])
 def send_welcome(message):
     ''' BOT commands logic '''
     answer = None
@@ -116,7 +116,7 @@ def send_welcome(message):
         BOT.reply_to(message, 'Z-z-z-z...')
     elif message.text == '/face':
         BOT.send_photo(message.chat.id, get_face())
-    elif message.text == '/fortune':
+    elif message.text == '/talk':
         answer = finder(message.from_user.username)
         BOT.reply_to(message, answer)
     push_to_db(message, answer)
