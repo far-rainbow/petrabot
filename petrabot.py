@@ -16,6 +16,7 @@ from sqlalchemy import create_engine
 
 ROOTDIR = os.path.dirname(os.path.abspath(__file__))
 API_TOKEN = '1067546684:AAEyYPuY1m9cIQ7OMVux71rBy6mS6pC9EAg'
+GRP_TOKEN = 'BrxUAUjr_0gsVyqKnuFmuQ'
 BOT = telebot.AsyncTeleBot(API_TOKEN)
 PROXYNUM = 32
 WIN32 = bool(sys.platform == 'win32')
@@ -28,7 +29,7 @@ Tap /help to get more info.'''
 HELP_MESSAGE = '''
 Commands:
 /face -- get fake face
-/fortune -- get random cookie text
+/talk -- get random cookie text
 Chat with BOT to get some contex fortunes...
 '''
 
@@ -96,9 +97,10 @@ async def get_face():
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; YandexMetrika/2.0; \
                 +http://yandex.com/bots yabs01)'}
     proxy = next(PROXYLOOPITERATOR, None)
+    print(f'DBG> get face with {proxy}')
     async with httpx.AsyncClient(proxies=proxy, http2=True, headers=headers, timeout=10.0) as sess:
         result = await sess.get(url='https://thispersondoesnotexist.com/image')
-        return {'proxy': proxy, 'result': result.content}
+        return result.content
 
 
 @BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk'])
@@ -126,5 +128,9 @@ def echo_message(message):
     BOT.reply_to(message, answer)
     push_to_db(message, answer)
 
+def listener(messages):
+    for m in messages:
+        print(str(m))
 
+BOT.set_update_listener(listener)
 BOT.polling()
