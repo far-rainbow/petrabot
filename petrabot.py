@@ -39,7 +39,7 @@ BASE = declarative_base()
 class MessageRecord(BASE):
     ''' ORM '''
     __tablename__ = 'messages'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True) 
     name = Column(String)
     query = Column(String)
     answer = Column(String)
