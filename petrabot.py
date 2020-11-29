@@ -106,27 +106,29 @@ async def get_face():
 @BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk'])
 def send_welcome(message):
     ''' BOT commands logic '''
-    answer = None
-    if message.text == '/start':
-        BOT.reply_to(message, START_MESSAGE)
-    elif message.text == '/help':
-        BOT.reply_to(message, HELP_MESSAGE)
-    elif message.text == '/stop':
-        BOT.reply_to(message, 'Z-z-z-z...')
-    elif message.text == '/face':
-        BOT.send_photo(message.chat.id, asyncio.run(get_face()))
-    elif message.text == '/talk':
-        answer = finder(message.from_user.username)
-        BOT.reply_to(message, answer)
-    push_to_db(message, answer)
+    if message.chat.id > 0:
+        answer = None
+        if message.text == '/start':
+            BOT.reply_to(message, START_MESSAGE)
+        elif message.text == '/help':
+            BOT.reply_to(message, HELP_MESSAGE)
+        elif message.text == '/stop':
+            BOT.reply_to(message, 'Z-z-z-z...')
+        elif message.text == '/face':
+            BOT.send_photo(message.chat.id, asyncio.run(get_face()))
+        elif message.text == '/talk':
+            answer = finder(message.from_user.username)
+            BOT.reply_to(message, answer)
+        push_to_db(message, answer)
 
 
 @BOT.message_handler(func=lambda message: True)
 def echo_message(message):
     ''' user text logic '''
-    answer = finder(message.from_user.username, message.text)
-    BOT.reply_to(message, answer)
-    push_to_db(message, answer)
+    if message.chat.id > 0:
+        answer = finder(message.from_user.username, message.text)
+        BOT.reply_to(message, answer)
+        push_to_db(message, answer)
 
 def listener(messages):
     for m in messages:
