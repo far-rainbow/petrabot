@@ -6,7 +6,7 @@ RUN apt update && apt upgrade -y && \
     apt install fortune -y && \
     apt install fortunes-ru -y && \
     apt install fortunes-bofh-excuses -y
-
+   
 WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
