@@ -14,11 +14,12 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
-from envs import env
+from dotenv import load_dotenv
+load_dotenv()
 
 ROOTDIR = os.path.dirname(os.path.abspath(__file__))
-API_TOKEN = env('API_TOKEN')
-GRP_TOKEN = env('GRP_TOKEN')
+API_TOKEN = os.environ['API_TOKEN']
+GRP_TOKEN = os.environ['GRP_TOKEN']
 BOT = telebot.AsyncTeleBot(API_TOKEN)
 PROXYNUM = 32
 WIN32 = bool(sys.platform == 'win32')
@@ -88,7 +89,7 @@ def finder(uid, cmd=''):
                 ['%s/finder.sh' % ROOTDIR, '%s' % uid, '%s' % cmd.lower()])
         except subprocess.SubprocessError:
             fortune = subprocess.check_output(
-                ['/usr/games/fortune', '-a', '/usr/share/games/fortunes/'])
+                ['/usr/games/fortune', 'ru', '/usr/share/games/fortunes/'])
     else:
         fortune = b'This is Windows OS. No fortune found...'
     return fortune
