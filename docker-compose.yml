@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  petrabot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - .:/app
