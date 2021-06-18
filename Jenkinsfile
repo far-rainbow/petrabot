@@ -17,6 +17,7 @@ pipeline {
                     )
          ]) {
               sh "docker login -u=$USER -p='$PASSWORD'"
+              sh "docker ps -a"
          }
          sh "docker push kamenka/petrabot"
       }
