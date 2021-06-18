@@ -1,4 +1,4 @@
-''' PetraBot Telegram bot logic '''
+''' PetraBot Telegram bot logic | v.2 [18.06.2021] '''
 import os
 import sys
 import subprocess
