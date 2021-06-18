@@ -19,7 +19,8 @@ pipeline {
               sh "docker login -u=$USER -p='$PASSWORD'"
               sh "docker ps -a"
          }
-         sh "docker push kamenka/petrabot"
+         sh "docker tag petrabot_master_petrabot:latest kamenka/petrabot:latest"
+         sh "docker push kamenka/petrabot:latest"
       }
     }
   }
