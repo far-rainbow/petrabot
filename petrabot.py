@@ -42,7 +42,7 @@ BASE = declarative_base()
 class MessageRecord(BASE):
     ''' ORM '''
     __tablename__ = 'messages'
-    id = Column(Integer, primary_key=True) 
+    id = Column(Integer, primary_key=True)
     name = Column(String)
     query = Column(String)
     answer = Column(String)
@@ -52,7 +52,6 @@ class MessageRecord(BASE):
 ENGINE = create_engine(f'sqlite:///petrabot.db', echo=False)
 BASE.metadata.create_all(ENGINE)
 SESSION = sessionmaker(bind=ENGINE)()
-
 COLLECTOR = proxyscrape.create_collector(
     'default', 'https', refresh_interval=10)
 
