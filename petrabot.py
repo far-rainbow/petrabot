@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import itertools
 import telebot
 import httpx
-import proxyscrape
+#import proxyscrape
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime
@@ -19,7 +19,7 @@ load_dotenv()
 
 ROOTDIR = os.path.dirname(os.path.abspath(__file__))
 API_TOKEN = os.environ['API_TOKEN']
-GRP_TOKEN = os.environ['GRP_TOKEN']
+#GRP_TOKEN = os.environ['GRP_TOKEN']
 BOT = telebot.AsyncTeleBot(API_TOKEN)
 PROXYNUM = 32
 WIN32 = bool(sys.platform == 'win32')
@@ -52,21 +52,22 @@ class MessageRecord(BASE):
 ENGINE = create_engine(f'sqlite:///petrabot.db', echo=False)
 BASE.metadata.create_all(ENGINE)
 SESSION = sessionmaker(bind=ENGINE)()
-COLLECTOR = proxyscrape.create_collector(
-    'default', 'https', refresh_interval=10)
+#COLLECTOR = proxyscrape.create_collector(
+#    'default', 'http')
 
 
-def get_proxy_scrape(num):
-    ''' proxy scraper '''
-    proxy = COLLECTOR.get_proxies({'anonymous': True})
-    proxy_dict = []
-    for _ in proxy[:num]:
-        proxy_item = {'http://': 'http://' + _[0] + ':' + _[1]}
-        proxy_dict.append(proxy_item)
-    return proxy_dict
+#def get_proxy_scrape(num):
+#    ''' proxy scraper '''
+#    proxy = COLLECTOR.get_proxies()
+#    print(proxy)
+#    proxy_dict = []
+#    for _ in proxy[:num]:
+#        proxy_item = {'http://': 'http://' + _[0] + ':' + _[1]}
+#        proxy_dict.append(proxy_item)
+#    return proxy_dict
 
 
-PROXYLOOPITERATOR = itertools.cycle(get_proxy_scrape(PROXYNUM))
+#PROXYLOOPITERATOR = itertools.cycle(get_proxy_scrape(PROXYNUM))
 
 
 def push_to_db(message, answer=None):
@@ -99,9 +100,10 @@ async def get_face():
     ''' html response getter '''
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; YandexMetrika/2.0; \
                 +http://yandex.com/bots yabs01)'}
-    proxy = next(PROXYLOOPITERATOR, None)
+#    proxy = next(PROXYLOOPITERATOR, None)
     print(f'DBG> get face with {proxy}')
-    async with httpx.AsyncClient(proxies=proxy, http2=True, headers=headers, timeout=10.0) as sess:
+#    async with httpx.AsyncClient(proxies=proxy, http2=True, headers=headers, timeout=10.0) as sess:
+    async with httpx.AsyncClient(http2=True, headers=headers, timeout=10.0) as sess:
         result = await sess.get(url='https://thispersondoesnotexist.com/image')
         return result.content
 
