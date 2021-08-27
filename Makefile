@@ -1,3 +1,4 @@
 all:
-	docker build --tag petrabot-docker .
-	docker run petrabot-docker
+	docker build --tag kamenka/petrabot .
+	docker image push kamenka/petrabot:latest
+

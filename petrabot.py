@@ -49,7 +49,7 @@ class MessageRecord(BASE):
     time = Column(DateTime)
 
 
-ENGINE = create_engine(f'sqlite:///petrabot.db', echo=False)
+ENGINE = create_engine(f'sqlite:///db/petrabot.db', echo=False)
 BASE.metadata.create_all(ENGINE)
 SESSION = sessionmaker(bind=ENGINE)()
 #COLLECTOR = proxyscrape.create_collector(
