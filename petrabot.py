@@ -79,6 +79,7 @@ def push_to_db(message, answer=None):
                          answer=answer, time=datetime.now(timezone.utc))
     SESSION.add(mrec)
     SESSION.commit()
+    sys.stdout.flush()
 
 
 def finder(uid, cmd=''):
