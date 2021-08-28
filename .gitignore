@@ -1,7 +1,6 @@
-/db/.
+/db/**
 /petrabot.db
 /.pydevproject
 /.project
-/petrabot
-.env
-/tmp
+/.env
+tmp/
