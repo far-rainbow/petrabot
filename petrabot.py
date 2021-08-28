@@ -101,7 +101,7 @@ async def get_face():
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; YandexMetrika/2.0; \
                 +http://yandex.com/bots yabs01)'}
 #    proxy = next(PROXYLOOPITERATOR, None)
-    print(f'DBG> get face with {proxy}')
+#    print(f'DBG> get face with {proxy}')
 #    async with httpx.AsyncClient(proxies=proxy, http2=True, headers=headers, timeout=10.0) as sess:
     async with httpx.AsyncClient(http2=True, headers=headers, timeout=10.0) as sess:
         result = await sess.get(url='https://thispersondoesnotexist.com/image')
