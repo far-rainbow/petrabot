@@ -109,7 +109,7 @@ async def get_face():
 
 
 def get_stats():
-    return bytes('%s %s' % (sys.executable or sys.platform, sys.version))
+    return bytes('%s %s' % (sys.executable or sys.platform, sys.version),'utf-8')
 
 @BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats'])
 def send_welcome(message):
