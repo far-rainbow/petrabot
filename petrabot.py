@@ -4,7 +4,7 @@ import sys
 import subprocess
 import asyncio
 from datetime import datetime, timezone
-import itertools
+#import itertools
 import telebot
 import httpx
 #import proxyscrape
@@ -108,7 +108,10 @@ async def get_face():
         return result.content
 
 
-@BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk'])
+def get_stats():
+    return print('%s %s' % (sys.executable or sys.platform, sys.version))
+
+@BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats'])
 def send_welcome(message):
     ''' BOT commands logic '''
     if message.chat.id > 0:
@@ -123,6 +126,9 @@ def send_welcome(message):
             BOT.send_photo(message.chat.id, asyncio.run(get_face()))
         elif message.text == '/talk':
             answer = finder(message.from_user.username)
+            BOT.reply_to(message, answer)
+        elif message.text == "/stats":
+            answer = get_stats()
             BOT.reply_to(message, answer)
         push_to_db(message, answer)
 
