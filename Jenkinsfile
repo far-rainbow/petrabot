@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('BUILD') {
       steps {
-        sh 'docker-compose build --pull'
+        sh 'docker-compose build --pull --tag kamenka/petrabot'
       }
     }
 
