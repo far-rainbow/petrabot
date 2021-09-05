@@ -1,4 +1,4 @@
 all:
-	docker build --tag kamenka/petrabot:latest .
-	docker image push kamenka/petrabot:latest
+	docker build --tag kamenka/petrabot:govorun .
+	docker image push kamenka/petrabot:govorun
 

@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   petrabot:
-    image: kamenka/petrabot:latest
+    image: kamenka/petrabot:govorun
     build:
       context: .
       dockerfile: Dockerfile
