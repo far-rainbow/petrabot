@@ -25,16 +25,13 @@ PROXYNUM = 32
 WIN32 = bool(sys.platform == 'win32')
 
 START_MESSAGE = '''
-Hi there, I am Kamenka SU Bot.
-I am here to enjoy you with some stuff.
-Tap /help to get more info.'''
+Привет! Я робот Птица Говорун.
+Напиши мне любое слово на любом языке,
+и я поддержу беседу. Также ты можешь загадать
+что-нибудь и написать мне какое-то слово, связанное
+с тем что загадано. И я найду что-нибудь интересное
+связанное с твоей загадкой или даже мечтой. Пиши!'''
 
-HELP_MESSAGE = '''
-Commands:
-/face -- get fake face
-/talk -- get random cookie text
-Or just chat with BOT to get some fun...
-'''
 
 BASE = declarative_base()
 
@@ -111,19 +108,13 @@ async def get_face():
 def get_stats():
     return bytes('%s %s' % (sys.executable or sys.platform, sys.version),'utf-8')
 
-@BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats'])
+@BOT.message_handler(commands=['start', 'talk', 'stats'])
 def send_welcome(message):
     ''' BOT commands logic '''
     if message.chat.id > 0:
         answer = None
         if message.text == '/start':
             BOT.reply_to(message, START_MESSAGE)
-        elif message.text == '/help':
-            BOT.reply_to(message, HELP_MESSAGE)
-        elif message.text == '/stop':
-            BOT.reply_to(message, 'Z-z-z-z...')
-        elif message.text == '/face':
-            BOT.send_photo(message.chat.id, asyncio.run(get_face()))
         elif message.text == '/talk':
             answer = finder(message.from_user.username)
             BOT.reply_to(message, answer)
