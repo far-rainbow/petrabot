@@ -17,6 +17,8 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 load_dotenv()
 
+from img import Img
+
 ROOTDIR = os.path.dirname(os.path.abspath(__file__))
 API_TOKEN = os.environ['API_TOKEN']
 #GRP_TOKEN = os.environ['GRP_TOKEN']
@@ -130,6 +132,7 @@ def send_welcome(message):
         elif message.text == "/stats":
             answer = get_stats()
             BOT.reply_to(message, answer)
+            BOT.reply_to(message, Img('.'))
         push_to_db(message, answer)
 
 
