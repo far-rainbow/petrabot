@@ -3,9 +3,9 @@ from PIL import Image,ImageDraw
 
 class Img():
 
-    __init__(self,path):
+    def __init__(self,path):
         self.pics = []
-        loadAllPics(self.pics,path)
+        self.loadAllPics(self.pics,path)
     
     def loadAllPics(self,pics,path):
         pics = glob.glob(path+'*.jpg')
