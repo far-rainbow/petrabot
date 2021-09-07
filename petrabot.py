@@ -130,8 +130,8 @@ def send_welcome(message):
             BOT.reply_to(message, answer)
         elif message.text == "/stats":
             answer = get_stats()
-            BOT.reply_to(message, answer)
-            BOT.reply_to(message, f'LS: {images.pics}')
+            #BOT.reply_to(message, answer)
+            BOT.send_photo(message.chat.id, asyncio.run(images.getRandomImage()))
         push_to_db(message, answer)
 
 
