@@ -5,8 +5,7 @@ class Img():
 
     def __init__(self,path):
         self.pics = []
-        self.loadAllPics(self.pics,path)
+        self.pics = self.loadAllPics(path)
     
-    def loadAllPics(self,pics,path):
-        pics = glob.glob(path+'*.jpg')
-        print(pics)
+    def loadAllPics(self,path):
+        return glob.glob(path+'*.jpg') + glob.glob(path+'*.png') 

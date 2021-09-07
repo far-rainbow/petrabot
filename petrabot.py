@@ -13,11 +13,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-
+from img import Img
 from dotenv import load_dotenv
 load_dotenv()
-
-from img import Img
 
 ROOTDIR = os.path.dirname(os.path.abspath(__file__))
 API_TOKEN = os.environ['API_TOKEN']
@@ -71,6 +69,7 @@ SESSION = sessionmaker(bind=ENGINE)()
 
 #PROXYLOOPITERATOR = itertools.cycle(get_proxy_scrape(PROXYNUM))
 
+images = Img(ROOTDIR + '/img/')
 
 def push_to_db(message, answer=None):
     ''' save username,query and BOT answer (optionaly) into db '''
@@ -132,7 +131,7 @@ def send_welcome(message):
         elif message.text == "/stats":
             answer = get_stats()
             BOT.reply_to(message, answer)
-            BOT.reply_to(message, Img('./img'))
+            BOT.reply_to(message, f'LS: {images.pics}')
         push_to_db(message, answer)
 
 
@@ -147,6 +146,6 @@ def echo_message(message):
 def listener(messages):
     for m in messages:
         print(str(m))
-
+        
 BOT.set_update_listener(listener)
 BOT.polling()
