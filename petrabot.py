@@ -132,7 +132,7 @@ def send_welcome(message):
         elif message.text == "/stats":
             answer = get_stats()
             BOT.reply_to(message, answer)
-            BOT.reply_to(message, Img('.'))
+            BOT.reply_to(message, Img('./img'))
         push_to_db(message, answer)
 
 
