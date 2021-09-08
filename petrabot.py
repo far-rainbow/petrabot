@@ -129,9 +129,10 @@ def send_welcome(message):
             answer = finder(message.from_user.username)
             BOT.reply_to(message, answer)
         elif message.text == "/stats":
-            answer = get_stats()
+            #answer = get_stats()
             #BOT.reply_to(message, answer)
-            BOT.send_photo(message.chat.id, asyncio.run(images.getRandomImage()))
+            answer = finder(message.from_user.username)
+            BOT.send_photo(message.chat.id, asyncio.run(images.getRandomImageWithText(answer)))
         push_to_db(message, answer)
 
 
