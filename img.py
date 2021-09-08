@@ -2,8 +2,6 @@ import io
 import glob
 import random
 from PIL import Image,ImageDraw
-from astroid.__pkginfo__ import web
-from rich import palette
 
 class Img():
     
