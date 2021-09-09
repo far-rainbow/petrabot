@@ -3,6 +3,7 @@ import glob
 import random
 import textwrap
 from PIL import Image,ImageDraw,ImageFont
+from copy import deepcopy
 
 class Img():
     
@@ -49,7 +50,7 @@ class Img():
         return imgRGB
 
     async def getRandomImage(self):
-        return random.choice(self.pics)
+        return deepcopy(random.choice(self.pics))
 
     async def getRandomImageWithText(self,text):
         imgRGB = await self.getRandomImage()
