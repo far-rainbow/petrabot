@@ -32,8 +32,8 @@ class Img():
                 width_ratio = 1 / (img.width / self.MAX_WIDTH)
                 ratio = min(height_ratio,width_ratio)
             elif img.height < self.MAX_HEIGHT or img.width < self.MAX_WIDTH:
-                height_ratio = (self.MAX_HEIGHT / img.height)
-                width_ratio = (self.MAX_WIDTH / img.width)
+                height_ratio = self.MAX_HEIGHT / img.height
+                width_ratio = self.MAX_WIDTH / img.width
                 ratio = min(height_ratio,width_ratio)
             if ratio:
                 img = img.resize(size=(int(img.width*ratio),int(img.height*ratio)))
