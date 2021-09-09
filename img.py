@@ -7,8 +7,8 @@ from PIL.FontFile import WIDTH
 
 class Img():
     
-    MAX_HEIGHT = 1080
-    MAX_WIDTH = 1920
+    MAX_HEIGHT = 400
+    MAX_WIDTH = 600
 
     def __init__(self,path):
         self.pics = self.loadAllPics(path)
@@ -18,15 +18,17 @@ class Img():
         pic_pathes = glob.glob(path+'*.jpg') + glob.glob(path+'*.png')
         pics = list()
         for _ in pic_pathes:
+            ratio = 1
             img = Image.open(_)
             print(f'{img.filename} {img.size} {img.format} loaded...')
-            if img.height > self.MAX_HEIGHT:
+            # explicit is better than implicit
+            if img.height > self.MAX_HEIGHT or img.width > self.MAX_WIDTH:
                 height_ratio = 1 / (img.height / self.MAX_HEIGHT)
-            if img.width > self.MAX_WIDTH:
                 width_ratio = 1 / (img.width / self.MAX_WIDTH)
-            ratio = min(height_ratio,width_ratio)
-            img = img.resize(size=(int(img.width*ratio),int(img.height*ratio)))
-            print(f'Resized with {ratio} ratio. New size is {img.size}')
+                ratio = min(height_ratio,width_ratio)
+            if ratio < 1:
+                img = img.resize(size=(int(img.width*ratio),int(img.height*ratio)))
+                print(f'Resized with {ratio} ratio. New size is {img.size}')
             pics.append(img)
         print(f'{len(pics)} pics loaded...')
         return pics
