@@ -8,14 +8,15 @@ class Img():
     
     MAX_HEIGHT = 1080
     MAX_WIDTH = 1920
+    TEXT_FONT_SIZE = 80
     TEXT_START_V_POS = 32
-    TEXT_MAX_CHARS_PER_LINE = 20
+    TEXT_MAX_CHARS_PER_LINE = 30
     TEXT_STROKE_COLOR = 'black'
     TEXT_STROKE_WIDTH = 2
 
     def __init__(self,path):
         self.pics = self.loadAllPics(path)
-        self.font = ImageFont.truetype("BadScript-Regular.ttf", 60)
+        self.font = ImageFont.truetype("BadScript-Regular.ttf", self.TEXT_FONT_SIZE)
     
     def loadAllPics(self,path):
         pic_pathes = glob.glob(path+'*.jpg') + glob.glob(path+'*.png')
