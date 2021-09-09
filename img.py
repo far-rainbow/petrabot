@@ -3,6 +3,7 @@ import glob
 import random
 from PIL import Image,ImageDraw,ImageFont
 from picture import Picture 
+from PIL.FontFile import WIDTH
 
 class Img():
     
@@ -17,18 +18,15 @@ class Img():
         pic_pathes = glob.glob(path+'*.jpg') + glob.glob(path+'*.png')
         pics = list()
         for _ in pic_pathes:
-            img = Picture()
             img = Image.open(_)
             print(f'{img.filename} {img.size} {img.format} loaded...')
-            # TODO: combine ratios
             if img.height > self.MAX_HEIGHT:
-                img.height_ratio = 1 / (img.height / self.MAX_HEIGHT)
-                print(f'Too big height. Resize with height {img.height_ratio} ratio')
-                img = img.resize(size=(int(img.width*img.height_ratio),int(img.height*img.height_ratio)))
+                height_ratio = 1 / (img.height / self.MAX_HEIGHT)
             if img.width > self.MAX_WIDTH:
-                ratio = 1 / (img.width / self.MAX_WIDTH)
-                print(f'Too big width. Resize with width {ratio} ratio')
-                img = img.resize(size=(int(img.width*ratio),int(img.height*ratio)))
+                width_ratio = 1 / (img.width / self.MAX_WIDTH)
+            ratio = min(height_ratio,width_ratio)
+            img = img.resize(size=(int(img.width*ratio),int(img.height*ratio)))
+            print(f'Resized with {ratio} ratio. New size is {img.size}')
             pics.append(img)
         print(f'{len(pics)} pics loaded...')
         return pics
