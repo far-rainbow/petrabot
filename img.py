@@ -1,16 +1,21 @@
 import io
 import glob
 import random
+import textwrap
 from PIL import Image,ImageDraw,ImageFont
 
 class Img():
     
     MAX_HEIGHT = 1080
     MAX_WIDTH = 1920
+    TEXT_START_V_POS = 32
+    TEXT_MAX_CHARS_PER_LINE = 20
+    TEXT_STROKE_COLOR = 'black'
+    TEXT_STROKE_WIDTH = 2
 
     def __init__(self,path):
         self.pics = self.loadAllPics(path)
-        self.font = ImageFont.truetype("BadScript-Regular.ttf", 40)
+        self.font = ImageFont.truetype("BadScript-Regular.ttf", 60)
     
     def loadAllPics(self,path):
         pic_pathes = glob.glob(path+'*.jpg') + glob.glob(path+'*.png')
@@ -46,8 +51,12 @@ class Img():
         return random.choice(self.pics)
 
     async def getRandomImageWithText(self,text):
-        text = text.decode('utf-8')
         imgRGB = await self.getRandomImage()
         draw = ImageDraw.Draw(imgRGB)
-        draw.text((0,0),text,(255,255,255),font=self.font)
+        text_lines = textwrap.wrap(text.decode('utf-8'),self.TEXT_MAX_CHARS_PER_LINE)
+        v_pos = self.TEXT_START_V_POS
+        for line in text_lines:
+            font_width,font_height = self.font.getsize(line)
+            draw.text((32,v_pos),line,(255,255,255),font=self.font,stroke_width=self.TEXT_STROKE_WIDTH, stroke_fill=self.TEXT_STROKE_COLOR)
+            v_pos += font_height
         return self.getBytes(imgRGB,qlty=60)
