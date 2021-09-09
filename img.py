@@ -2,8 +2,6 @@ import io
 import glob
 import random
 from PIL import Image,ImageDraw,ImageFont
-from picture import Picture 
-from PIL.FontFile import WIDTH
 
 class Img():
     
@@ -12,7 +10,7 @@ class Img():
 
     def __init__(self,path):
         self.pics = self.loadAllPics(path)
-        self.font = ImageFont.truetype("BadScript-Regular.ttf", 20)
+        self.font = ImageFont.truetype("BadScript-Regular.ttf", 40)
     
     def loadAllPics(self,path):
         pic_pathes = glob.glob(path+'*.jpg') + glob.glob(path+'*.png')
