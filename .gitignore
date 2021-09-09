@@ -3,4 +3,5 @@
 /.pydevproject
 /.project
 /.env
+/__pycache__
 tmp/
