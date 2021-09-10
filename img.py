@@ -6,6 +6,9 @@ from PIL import Image,ImageDraw,ImageFont
 from copy import deepcopy
 
 class Img():
+    '''
+    This class is an images lib + some public stuff...
+    '''
     
     MAX_HEIGHT = 1080
     MAX_WIDTH = 1920
