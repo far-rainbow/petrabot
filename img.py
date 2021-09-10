@@ -20,6 +20,12 @@ class Img():
         self.font = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE)
     
     def loadAllPics(self,path):
+        '''
+        private method
+        preload all images with onfly resizing to global width/height attrs
+        :param dir path to fetch pics from
+        :returns: a list with Image object loaded from path dir
+        '''
         pic_pathes = glob.glob(path+'*.jpg') + glob.glob(path+'*.png')
         pics = list()
         for _ in pic_pathes:
@@ -43,7 +49,9 @@ class Img():
         return pics
 
     def getBytes(self,img,qlty=75):
-        ''' return: bytes array of Image (Telegram API acceptable) '''
+        '''
+        :returns: bytes array of Image (Telegram API acceptable)
+        '''
         imgByteArr = io.BytesIO()
         imgRGB = img.convert(mode='RGB')
         imgRGB.save(imgByteArr, format='JPEG',quality=qlty)
@@ -51,10 +59,14 @@ class Img():
         return imgRGB
 
     async def getRandomImage(self):
-        ''' return: deep copy of Image object to prevent original object modification '''
+        ''' :returns: deep copy of Image object to prevent original object modification '''
         return deepcopy(random.choice(self.pics))
 
     async def getRandomImageWithText(self,text):
+        '''
+            public method
+            :returns: byte array of image with text added
+        '''
         imgRGB = await self.getRandomImage()
         draw = ImageDraw.Draw(imgRGB)
         text_lines = textwrap.wrap(text.decode('utf-8'),self.TEXT_MAX_CHARS_PER_LINE)

@@ -17,7 +17,8 @@ from img import Img
 from dotenv import load_dotenv
 load_dotenv()
 
-ROOTDIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+IMG_PATH = ROOT_DIR + '/img/'
 API_TOKEN = os.environ['API_TOKEN']
 #GRP_TOKEN = os.environ['GRP_TOKEN']
 BOT = telebot.AsyncTeleBot(API_TOKEN)
@@ -69,7 +70,7 @@ SESSION = sessionmaker(bind=ENGINE)()
 
 #PROXYLOOPITERATOR = itertools.cycle(get_proxy_scrape(PROXYNUM))
 
-images = Img(ROOTDIR + '/img/')
+images = Img(IMG_PATH)
 
 def push_to_db(message, answer=None):
     ''' save username,query and BOT answer (optionaly) into db '''
@@ -88,7 +89,7 @@ def finder(uid, cmd=''):
     if not WIN32:
         try:
             fortune = subprocess.check_output(
-                ['%s/finder.sh' % ROOTDIR, '%s' % uid, '%s' % cmd.lower()])
+                ['%s/finder.sh' % ROOT_DIR, '%s' % uid, '%s' % cmd.lower()])
         except subprocess.SubprocessError:
             fortune = subprocess.check_output(
                 ['/usr/games/fortune', 'ru', '/usr/share/games/fortunes/'])
