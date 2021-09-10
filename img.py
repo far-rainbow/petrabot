@@ -61,4 +61,4 @@ class Img():
             font_width,font_height = self.font.getsize(line)
             draw.text((32,v_pos),line,(255,255,255),font=self.font,stroke_width=self.TEXT_STROKE_WIDTH, stroke_fill=self.TEXT_STROKE_COLOR)
             v_pos += font_height
-        return self.getBytes(imgRGB,qlty=60)
+        return self.getBytes(imgRGB)
