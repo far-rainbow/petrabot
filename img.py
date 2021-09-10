@@ -17,7 +17,7 @@ class Img():
 
     def __init__(self,path):
         self.pics = self.loadAllPics(path)
-        self.font = ImageFont.truetype("BadScript-Regular.ttf", self.TEXT_FONT_SIZE)
+        self.font = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE)
     
     def loadAllPics(self,path):
         pic_pathes = glob.glob(path+'*.jpg') + glob.glob(path+'*.png')
