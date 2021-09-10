@@ -43,6 +43,7 @@ class Img():
         return pics
 
     def getBytes(self,img,qlty=75):
+        ''' return: bytes array of Image (Telegram API acceptable) '''
         imgByteArr = io.BytesIO()
         imgRGB = img.convert(mode='RGB')
         imgRGB.save(imgByteArr, format='JPEG',quality=qlty)
