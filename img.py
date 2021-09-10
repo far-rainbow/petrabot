@@ -50,6 +50,7 @@ class Img():
         return imgRGB
 
     async def getRandomImage(self):
+        ''' return: deep copy of Image object to prevent original object modification '''
         return deepcopy(random.choice(self.pics))
 
     async def getRandomImageWithText(self,text):
