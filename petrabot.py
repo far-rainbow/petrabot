@@ -13,8 +13,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from img import Img
 from dotenv import load_dotenv
+from img import Img
+
+# get env vars
 load_dotenv()
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -50,7 +52,7 @@ class MessageRecord(BASE):
     time = Column(DateTime)
 
 
-ENGINE = create_engine(f'sqlite:///db/petrabot.db', echo=False)
+ENGINE = create_engine('sqlite:///db/petrabot.db', echo=False)
 BASE.metadata.create_all(ENGINE)
 SESSION = sessionmaker(bind=ENGINE)()
 #COLLECTOR = proxyscrape.create_collector(
@@ -111,6 +113,7 @@ async def get_face():
 
 
 def get_stats():
+    ''' unused statistic method '''
     return bytes('%s %s' % (sys.executable or sys.platform, sys.version),'utf-8')
 
 @BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats'])
@@ -133,7 +136,7 @@ def send_welcome(message):
             #answer = get_stats()
             #BOT.reply_to(message, answer)
             answer = finder(message.from_user.username)
-            BOT.send_photo(message.chat.id, asyncio.run(images.getRandomImageWithText(answer)))
+            BOT.send_photo(message.chat.id, asyncio.run(images.get_random_image_with_text(answer)))
         push_to_db(message, answer)
 
 
@@ -146,8 +149,8 @@ def echo_message(message):
         push_to_db(message, answer)
 
 def listener(messages):
-    for m in messages:
-        print(str(m))
-        
+    ''' service method for telebot class '''
+    for msg in messages:
+        print(str(msg))
 BOT.set_update_listener(listener)
 BOT.polling()

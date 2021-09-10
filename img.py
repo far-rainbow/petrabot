@@ -1,16 +1,16 @@
+''' img lib class '''
 import io
 import glob
 import random
 import textwrap
-from PIL import Image, ImageDraw, ImageFont
 from copy import deepcopy
+from PIL import Image, ImageDraw, ImageFont
 
 
 class Img():
     '''
     This class is an images lib + some public stuff...
     '''
-    
     MAX_HEIGHT = 1080
     MAX_WIDTH = 1920
     TEXT_FONT_SIZE = 80
@@ -20,10 +20,9 @@ class Img():
     TEXT_STROKE_WIDTH = 2
 
     def __init__(self, path):
-        self.pics = self.loadAllPics(path)
+        self.pics = self.load_all_pics(path)
         self.font = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE)
-    
-    def loadAllPics(self, path):
+    def load_all_pics(self, path):
         '''
         private
         preload all images with onfly resizing to global width/height attrs
@@ -31,7 +30,7 @@ class Img():
         :returns: a list with Image object loaded from path dir
         '''
         pic_pathes = glob.glob(path + '*.jpg') + glob.glob(path + '*.png')
-        pics = list()
+        pics = []
         for _ in pic_pathes:
             ratio = None
             img = Image.open(_)
@@ -52,27 +51,28 @@ class Img():
         print(f'{len(pics)} pics loaded...')
         return pics
 
-    def getBytes(self, img, qlty=75):
+    @staticmethod
+    def get_bytes(img, qlty=75):
         '''
         convert Image into JPEG byte array
         :param img: Image obj to convert
         :param qlty: JPEG quality (default is 75)
         :returns: byte array of Image (Telegram API acceptable)
         '''
-        imgByteArr = io.BytesIO()
-        imgRGB = img.convert(mode='RGB')
-        imgRGB.save(imgByteArr, format='JPEG', quality=qlty)
-        imgRGB = imgByteArr.getvalue()
-        return imgRGB
+        img_byte_array = io.BytesIO()
+        img_rgb = img.convert(mode='RGB')
+        img_rgb.save(img_byte_array, format='JPEG', quality=qlty)
+        img_rgb = img_byte_array.getvalue()
+        return img_rgb
 
-    async def getRandomImage(self):
+    async def get_random_image(self):
         '''
         private
         :returns: deep copy of Image object to prevent original object modification
         '''
         return deepcopy(random.choice(self.pics))
 
-    async def getRandomImageWithText(self, text):
+    async def get_random_image_with_text(self, text):
         '''
         public
         Get random image from pics list, draw a text on it, convert it to JPEG
@@ -80,12 +80,14 @@ class Img():
         :param text: string to draw on image
         :returns: byte array of random image from pics list with text added
         '''
-        imgRGB = await self.getRandomImage()
-        draw = ImageDraw.Draw(imgRGB)
+        img_rgb = await self.get_random_image()
+        draw = ImageDraw.Draw(img_rgb)
         text_lines = textwrap.wrap(text.decode('utf-8'), self.TEXT_MAX_CHARS_PER_LINE)
         v_pos = self.TEXT_START_V_POS
         for line in text_lines:
             font_width, font_height = self.font.getsize(line)
-            draw.text((32, v_pos), line, (255, 255, 255), font=self.font, stroke_width=self.TEXT_STROKE_WIDTH, stroke_fill=self.TEXT_STROKE_COLOR)
+            draw.text((32, v_pos), line, (255, 255, 255),
+                      font=self.font,stroke_width=self.TEXT_STROKE_WIDTH,
+                      stroke_fill=self.TEXT_STROKE_COLOR)
             v_pos += font_height
-        return self.getBytes(imgRGB)
+        return self.get_bytes(img_rgb)
