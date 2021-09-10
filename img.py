@@ -24,7 +24,7 @@ class Img():
     
     def loadAllPics(self,path):
         '''
-        private method
+        private
         preload all images with onfly resizing to global width/height attrs
         :param dir path to fetch pics from
         :returns: a list with Image object loaded from path dir
@@ -53,7 +53,10 @@ class Img():
 
     def getBytes(self,img,qlty=75):
         '''
-        :returns: bytes array of Image (Telegram API acceptable)
+        convert Image into JPEG byte array
+        :param img: Image obj to convert
+        :param qlty: JPEG quality (default is 75)
+        :returns: byte array of Image (Telegram API acceptable)
         '''
         imgByteArr = io.BytesIO()
         imgRGB = img.convert(mode='RGB')
@@ -62,13 +65,19 @@ class Img():
         return imgRGB
 
     async def getRandomImage(self):
-        ''' :returns: deep copy of Image object to prevent original object modification '''
+        '''
+        private
+        :returns: deep copy of Image object to prevent original object modification
+        '''
         return deepcopy(random.choice(self.pics))
 
     async def getRandomImageWithText(self,text):
         '''
-            public method
-            :returns: byte array of image with text added
+        public
+        Get random image from pics list, draw a text on it, convert it to JPEG
+            and return a byte array of it to caller (send to Telegram API srv)
+        :param text: string to draw on image
+        :returns: byte array of random image from pics list with text added
         '''
         imgRGB = await self.getRandomImage()
         draw = ImageDraw.Draw(imgRGB)
