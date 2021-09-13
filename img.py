@@ -86,11 +86,14 @@ class Img():
         v_pos = self.TEXT_START_V_POS
         for line in text_lines:
             font_width, font_height = self.font.getsize(line)
+            # draw text line shadow
             draw.text((40, v_pos+10), line, (0, 0, 0),
                       font=self.font,stroke_width=self.TEXT_STROKE_WIDTH,
                       stroke_fill=self.TEXT_STROKE_COLOR)
+            # draw text line
             draw.text((32, v_pos), line, (255, 255, 255),
                       font=self.font,stroke_width=self.TEXT_STROKE_WIDTH,
                       stroke_fill=self.TEXT_STROKE_COLOR)
+            # carriage return
             v_pos += font_height
         return self.get_bytes(img_rgb)
