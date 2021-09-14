@@ -20,11 +20,10 @@ class Img():
     TEXT_STROKE_WIDTH = 2
 
     def __init__(self, path):
-        self.pics = self.load_all_pics(path)
+        self.pics = self._load_all_pics(path)
         self.font = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE)
-    def load_all_pics(self, path):
+    def _load_all_pics(self, path):
         '''
-        private
         preload all images with onfly resizing to global width/height attrs
         :param dir path to fetch pics from
         :returns: a list with Image object loaded from path dir
@@ -65,22 +64,20 @@ class Img():
         img_rgb = img_byte_array.getvalue()
         return img_rgb
 
-    async def get_random_image(self):
+    async def _get_random_image(self):
         '''
-        private
         :returns: deep copy of Image object to prevent original object modification
         '''
         return deepcopy(random.choice(self.pics))
 
     async def get_random_image_with_text(self, text):
         '''
-        public
         Get random image from pics list, draw a text on it, convert it to JPEG
             and return a byte array of it to caller (send to Telegram API srv)
         :param text: string to draw on image
         :returns: byte array of random image from pics list with text added
         '''
-        img_rgb = await self.get_random_image()
+        img_rgb = await self._get_random_image()
         draw = ImageDraw.Draw(img_rgb)
         text_lines = textwrap.wrap(text.decode('utf-8'), self.TEXT_MAX_CHARS_PER_LINE)
         v_pos = self.TEXT_START_V_POS
