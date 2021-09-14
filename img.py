@@ -15,7 +15,10 @@ class Img():
     MAX_WIDTH = 1920
     SQUARE_MAX_HEIGHT = 1080
     SQUARE_MAX_WIDTH = 1080
+    
     TEXT_FONT_SIZE = 80
+    TEXT_FONT_SIZE_FALLBACK = 60
+    
     TEXT_START_V_POS = 32
     TEXT_MAX_CHARS_PER_LINE = 30
     TEXT_STROKE_COLOR = 'black'
@@ -24,6 +27,7 @@ class Img():
     def __init__(self, path):
         self.pics = self._load_all_pics(path)
         self.font = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE)
+        self.font_fallback_1 = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE_FALLBACK)
     def _load_all_pics(self, path):
         '''
         preload all images with onfly resizing to global width/height attrs
@@ -85,14 +89,17 @@ class Img():
         text_lines = textwrap.wrap(text.decode('utf-8'), self.TEXT_MAX_CHARS_PER_LINE)
         v_pos = self.TEXT_START_V_POS
         for line in text_lines:
-            font_width, font_height = self.font.getsize(line)
+            font_line = self.font
+            font_width, font_height = font_line.getsize(line)
+            if font_width > self.SQUARE_MAX_WIDTH:
+                font_line = self.font_fallback_1
             # draw text line shadow
             draw.text((40, v_pos+10), line, (0, 0, 0),
-                      font=self.font,stroke_width=self.TEXT_STROKE_WIDTH,
+                      font=font_line,stroke_width=self.TEXT_STROKE_WIDTH,
                       stroke_fill=self.TEXT_STROKE_COLOR)
             # draw text line
             draw.text((32, v_pos), line, (255, 255, 255),
-                      font=self.font,stroke_width=self.TEXT_STROKE_WIDTH,
+                      font=font_line,stroke_width=self.TEXT_STROKE_WIDTH,
                       stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
             v_pos += font_height
