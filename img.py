@@ -18,7 +18,8 @@ class Img():
     SQUARE_MAX_WIDTH = 1080
     
     TEXT_FONT_SIZE = 80
-    TEXT_FONT_SIZE_FALLBACK = 60
+    TEXT_FONT_SIZE_FALLBACK_1 = 70
+    TEXT_FONT_SIZE_FALLBACK_2 = 60
     H_OFFSET = 32
     H_OFFSET_SHADOW = 40
     
@@ -30,7 +31,8 @@ class Img():
     def __init__(self, path):
         self.pics = self._load_all_pics(path)
         self.font = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE)
-        self.font_fallback_1 = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE_FALLBACK)
+        self.font_fallback_1 = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE_FALLBACK_1)
+        self.font_fallback_2 = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE_FALLBACK_2)
     def _load_all_pics(self, path):
         '''
         preload all images with onfly resizing to global width/height attrs
@@ -96,6 +98,10 @@ class Img():
             font_width, font_height = font_line.getsize(line)
             if font_width > self.SQUARE_MAX_WIDTH - self.H_OFFSET_SHADOW:
                 font_line = self.font_fallback_1
+                font_width, font_height = font_line.getsize(line)
+            elif font_width > self.SQUARE_MAX_WIDTH - self.H_OFFSET_SHADOW:
+                font_line = self.font_fallback_2
+                font_width, font_height = font_line.getsize(line)
             # draw text line shadow
             draw.text((self.H_OFFSET_SHADOW, v_pos+10), line, (0, 0, 0),
                       font=font_line,stroke_width=self.TEXT_STROKE_WIDTH,
