@@ -112,4 +112,5 @@ class Img():
                       stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
             v_pos += font_height
-        return self.get_bytes(text_rgb)
+        final_rgb = img_rgb.paste(text_rgb)
+        return self.get_bytes(final_rgb)
