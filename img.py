@@ -94,7 +94,7 @@ class Img():
         for line in text_lines:
             font_line = self.font
             font_width, font_height = font_line.getsize(line)
-            if font_width > self.SQUARE_MAX_WIDTH + self.H_OFFSET_SHADOW:
+            if font_width > self.SQUARE_MAX_WIDTH - self.H_OFFSET_SHADOW:
                 font_line = self.font_fallback_1
             # draw text line shadow
             draw.text((self.H_OFFSET_SHADOW, v_pos+10), line, (0, 0, 0),
