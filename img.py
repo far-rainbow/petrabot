@@ -4,8 +4,7 @@ import glob
 import random
 import textwrap
 from copy import deepcopy
-from PIL import Image, ImageDraw, ImageFont
-from pip._internal import self_outdated_check
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 
 class Img():
@@ -29,6 +28,7 @@ class Img():
     TEXT_STROKE_WIDTH = 2
 
     def __init__(self, path):
+        self.last_three_pics_name = [1,2,3]
         self.pics = self._load_all_pics(path)
         self.font = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE)
         self.font_fallback_1 = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE_FALLBACK_1)
@@ -39,11 +39,12 @@ class Img():
         :param dir path to fetch pics from
         :returns: a list with Image object loaded from path dir
         '''
-        pic_pathes = glob.glob(path + '*.jpg') + glob.glob(path + '*.png')
+        pic_pathes = glob.glob(path + '*.jpg') + glob.glob(path + '*.png') + glob.glob(path + '*.webp')
         pics = []
         for _ in pic_pathes:
-            ratio = None
+            ratio = 1
             img = Image.open(_)
+            filename = img.filename
             print(f'{img.filename} {img.size} {img.format} loaded...')
             # explicit is better than implicit
             if img.height > self.MAX_HEIGHT or img.width > self.MAX_WIDTH:
@@ -53,10 +54,11 @@ class Img():
             elif img.height < self.MAX_HEIGHT or img.width < self.MAX_WIDTH:
                 height_ratio = self.MAX_HEIGHT / img.height
                 width_ratio = self.MAX_WIDTH / img.width
-                ratio = min(height_ratio, width_ratio)
-            if ratio:
+                ratio = max(height_ratio, width_ratio)
+            if ratio != 1:
                 img = img.resize(size=(int(img.width * ratio), int(img.height * ratio)))
                 print(f'Resized with {ratio} ratio. New size is {img.size}')
+            img.filename = filename
             pics.append(img)
         print(f'{len(pics)} pics loaded...')
         return pics
@@ -79,6 +81,12 @@ class Img():
         '''
         :returns: deep copy of Image object to prevent original object modification
         '''
+        pic_name = None
+        while pic_name in self.last_three_pics_name:
+            img = random.choice(self.pics)
+            pic_name = img.filename
+        self.last_three_pics_name.append(pic_name)
+        del self.last_three_pics_name[0]
         return deepcopy(random.choice(self.pics))
 
     async def get_random_image_with_text(self, text):
@@ -89,6 +97,7 @@ class Img():
         :returns: byte array of random image from pics list with text added
         '''
         img_rgb = await self._get_random_image()
+        img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(10))
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT), color=(0,0,0,0))
         draw = ImageDraw.Draw(text_rgb)
         text_lines = textwrap.wrap(text.decode('utf-8'), self.TEXT_MAX_CHARS_PER_LINE)
@@ -112,5 +121,6 @@ class Img():
                       stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
             v_pos += font_height
-        final_rgb = img_rgb.paste(text_rgb)
-        return self.get_bytes(final_rgb)
+        img_rgb.paste(text_rgb,(0,0),text_rgb)
+        img_rgb = img_rgb.crop((0,0,self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT))
+        return self.get_bytes(img_rgb)
