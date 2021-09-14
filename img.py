@@ -13,6 +13,8 @@ class Img():
     '''
     MAX_HEIGHT = 1080
     MAX_WIDTH = 1920
+    SQUARE_MAX_HEIGHT = 1080
+    SQUARE_MAX_WIDTH = 1080
     TEXT_FONT_SIZE = 80
     TEXT_START_V_POS = 32
     TEXT_MAX_CHARS_PER_LINE = 30
@@ -78,7 +80,8 @@ class Img():
         :returns: byte array of random image from pics list with text added
         '''
         img_rgb = await self._get_random_image()
-        draw = ImageDraw.Draw(img_rgb)
+        text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT), color=(0,0,0,0))
+        draw = ImageDraw.Draw(text_rgb)
         text_lines = textwrap.wrap(text.decode('utf-8'), self.TEXT_MAX_CHARS_PER_LINE)
         v_pos = self.TEXT_START_V_POS
         for line in text_lines:
@@ -93,4 +96,4 @@ class Img():
                       stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
             v_pos += font_height
-        return self.get_bytes(img_rgb)
+        return self.get_bytes(text_rgb)
