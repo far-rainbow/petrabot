@@ -5,6 +5,7 @@ import random
 import textwrap
 from copy import deepcopy
 from PIL import Image, ImageDraw, ImageFont
+from pip._internal import self_outdated_check
 
 
 class Img():
@@ -18,6 +19,8 @@ class Img():
     
     TEXT_FONT_SIZE = 80
     TEXT_FONT_SIZE_FALLBACK = 60
+    H_OFFSET = 32
+    H_OFFSET_SHADOW = 40
     
     TEXT_START_V_POS = 32
     TEXT_MAX_CHARS_PER_LINE = 30
@@ -91,14 +94,14 @@ class Img():
         for line in text_lines:
             font_line = self.font
             font_width, font_height = font_line.getsize(line)
-            if font_width > self.SQUARE_MAX_WIDTH:
+            if font_width > self.SQUARE_MAX_WIDTH + self.H_OFFSET_SHADOW:
                 font_line = self.font_fallback_1
             # draw text line shadow
-            draw.text((40, v_pos+10), line, (0, 0, 0),
+            draw.text((self.H_OFFSET_SHADOW, v_pos+10), line, (0, 0, 0),
                       font=font_line,stroke_width=self.TEXT_STROKE_WIDTH,
                       stroke_fill=self.TEXT_STROKE_COLOR)
             # draw text line
-            draw.text((32, v_pos), line, (255, 255, 255),
+            draw.text((self.H_OFFSET, v_pos), line, (255, 255, 255),
                       font=font_line,stroke_width=self.TEXT_STROKE_WIDTH,
                       stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
