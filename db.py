@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy import func
-from sqlalchemy.sql.expression import distinct
+from sqlalchemy.sql.expression import distinct, funcfilter
 
 base = declarative_base()
 
@@ -28,6 +28,11 @@ def get_session(path_to_db):
 def get_users_count(session):
     mcnt = session.query(func.count(distinct(MessageRecord.name))).scalar()
     return mcnt
+
+def get_users_name(session):
+    mnames = session.query(distinct(MessageRecord.name)).all()
+    print(mnames)
+    return mnames
 
 def push_to_db(session, message, answer=None):
     ''' save username,query and BOT answer (optionaly) into db '''

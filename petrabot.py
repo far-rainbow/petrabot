@@ -67,9 +67,11 @@ async def get_face():
 
 def get_stats():
     ''' unused statistic method '''
-    stats = bytes('%s %s' % (sys.executable or sys.platform, sys.version),'utf-8')
-    stats += bytes('\n','utf-8')
-    stats += bytes(f'> unique users: {db.get_users_count(SESSION)}', 'utf-8')
+    stats = bytes('%s %s\n' % (sys.executable or sys.platform, sys.version),'utf-8')
+    stats += bytes(f'> unique users: {db.get_users_count(SESSION)}\n', 'utf-8')
+    #TODO: refact into sub stats cmd
+    for name in db.get_users_name(SESSION):
+        stats += bytes(f'>>     {name[0]}\n','utf-8')
     return stats
 
 @BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats', 'insta'])
