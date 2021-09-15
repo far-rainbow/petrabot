@@ -3,10 +3,8 @@ import os
 import sys
 import subprocess
 import asyncio
-#import itertools
 import telebot
 import httpx
-#import proxyscrape
 
 from dotenv import load_dotenv
 from img import Img
@@ -57,9 +55,6 @@ async def get_face():
     ''' html response getter '''
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; YandexMetrika/2.0; \
                 +http://yandex.com/bots yabs01)'}
-#    proxy = next(PROXYLOOPITERATOR, None)
-#    print(f'DBG> get face with {proxy}')
-#    async with httpx.AsyncClient(proxies=proxy, http2=True, headers=headers, timeout=10.0) as sess:
     async with httpx.AsyncClient(http2=True, headers=headers, timeout=10.0) as sess:
         result = await sess.get(url='https://thispersondoesnotexist.com/image')
         return result.content

@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy import func
-from sqlalchemy.sql.expression import distinct, funcfilter
+from sqlalchemy.sql.expression import distinct
 
 base = declarative_base()
 
@@ -31,7 +31,6 @@ def get_users_count(session):
 
 def get_users_name(session):
     mnames = session.query(distinct(MessageRecord.name)).all()
-    print(mnames)
     return mnames
 
 def push_to_db(session, message, answer=None):
