@@ -133,10 +133,12 @@ def send_welcome(message):
             answer = finder(message.from_user.username)
             BOT.reply_to(message, answer)
         elif message.text == "/stats":
-            #answer = get_stats()
-            #BOT.reply_to(message, answer)
+            answer = get_stats()
+            BOT.reply_to(message, answer)
+        elif message.text == "/talk":
             answer = finder(message.from_user.username)
-            BOT.send_photo(message.chat.id, asyncio.run(images.get_random_image_with_text(answer)))
+            photo = asyncio.run(images.get_random_image_with_text(answer))
+            BOT.send_photo(message.chat.id, photo)
         push_to_db(message, answer)
 
 
