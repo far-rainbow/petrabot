@@ -101,6 +101,7 @@ class Img():
         img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(10))
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT), color=(0,0,0,0))
         draw = ImageDraw.Draw(text_rgb)
+        text_utf8 = text.decode('utf-8')
         text = '\n'.join(text.split('--'))
         print(text)
         text_lines = textwrap.wrap(text, width=self.TEXT_MAX_CHARS_PER_LINE,expand_tabs=True)
