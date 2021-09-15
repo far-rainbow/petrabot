@@ -102,7 +102,7 @@ class Img():
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT), color=(0,0,0,0))
         draw = ImageDraw.Draw(text_rgb)
         text = b'\n'.join(text.split(b'--'))
-        logging.warning(text)
+        print(text)
         text_lines = textwrap.wrap(text.decode('utf-8'), width=self.TEXT_MAX_CHARS_PER_LINE,expand_tabs=True)
         v_pos = self.TEXT_START_V_POS
         for line in text_lines:
