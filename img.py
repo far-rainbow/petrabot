@@ -102,10 +102,8 @@ class Img():
         img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.INSTA_BLUR))
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT), color=(0,0,0,0))
         draw = ImageDraw.Draw(text_rgb)
-        text_utf8 = text.decode('utf-8')
-        print(text_utf8)
-        text = '\n'.join(text_utf8.split('--'))
-        
+        text_utf8 = text.decode('utf-8').split('--')
+        text = text_utf8[0]+'\n'+text_utf8[1]+text_utf8[2]
         text_lines = textwrap.wrap(text, width=self.TEXT_MAX_CHARS_PER_LINE,expand_tabs=True)
         v_pos = self.TEXT_START_V_POS
         for line in text_lines:
