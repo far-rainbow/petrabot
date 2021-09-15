@@ -3,18 +3,14 @@ import os
 import sys
 import subprocess
 import asyncio
-from datetime import datetime, timezone
 #import itertools
 import telebot
 import httpx
 #import proxyscrape
 
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
 from dotenv import load_dotenv
 from img import Img
+import db
 
 # get env vars
 load_dotenv()
@@ -23,7 +19,6 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 IMG_PATH = ROOT_DIR + '/img/'
 API_TOKEN = os.environ['API_TOKEN']
 #GRP_TOKEN = os.environ['GRP_TOKEN']
-BOT = telebot.AsyncTeleBot(API_TOKEN)
 PROXYNUM = 32
 WIN32 = bool(sys.platform == 'win32')
 
@@ -39,51 +34,9 @@ Commands:
 Or just chat with BOT to get some fun...
 '''
 
-BASE = declarative_base()
-
-
-class MessageRecord(BASE):
-    ''' ORM '''
-    __tablename__ = 'messages'
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    query = Column(String)
-    answer = Column(String)
-    time = Column(DateTime)
-
-
-ENGINE = create_engine('sqlite:///db/petrabot.db', echo=False)
-BASE.metadata.create_all(ENGINE)
-SESSION = sessionmaker(bind=ENGINE)()
-#COLLECTOR = proxyscrape.create_collector(
-#    'default', 'http')
-
-
-#def get_proxy_scrape(num):
-#    ''' proxy scraper '''
-#    proxy = COLLECTOR.get_proxies()
-#    print(proxy)
-#    proxy_dict = []
-#    for _ in proxy[:num]:
-#        proxy_item = {'http://': 'http://' + _[0] + ':' + _[1]}
-#        proxy_dict.append(proxy_item)
-#    return proxy_dict
-
-
-#PROXYLOOPITERATOR = itertools.cycle(get_proxy_scrape(PROXYNUM))
-
+BOT = telebot.AsyncTeleBot(API_TOKEN)
+SESSION = db.get_session('sqlite:///db/petrabot.db')
 images = Img(IMG_PATH)
-
-def push_to_db(message, answer=None):
-    ''' save username,query and BOT answer (optionaly) into db '''
-    print(message.from_user.username, ' : ', message.text)
-    if answer is not None:
-        print('Answer: ', answer.decode('utf-8'))
-    mrec = MessageRecord(name=message.from_user.username, query=message.text,
-                         answer=answer, time=datetime.now(timezone.utc))
-    SESSION.add(mrec)
-    SESSION.commit()
-    sys.stdout.flush()
 
 
 def finder(uid, cmd=''):
@@ -114,9 +67,12 @@ async def get_face():
 
 def get_stats():
     ''' unused statistic method '''
-    return bytes('%s %s' % (sys.executable or sys.platform, sys.version),'utf-8')
+    stats = bytes('%s %s' % (sys.executable or sys.platform, sys.version),'utf-8')
+    stats += bytes('\n','utf-8')
+    stats += bytes(f'> {db.get_users_count(SESSION)}', 'utf-8')
+    return stats
 
-@BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats'])
+@BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats', 'insta'])
 def send_welcome(message):
     ''' BOT commands logic '''
     if message.chat.id > 0:
@@ -135,11 +91,11 @@ def send_welcome(message):
         elif message.text == "/stats":
             answer = get_stats()
             BOT.reply_to(message, answer)
-        elif message.text == "/talk":
+        elif message.text == "/insta":
             answer = finder(message.from_user.username)
             photo = asyncio.run(images.get_random_image_with_text(answer))
             BOT.send_photo(message.chat.id, photo)
-        push_to_db(message, answer)
+        db.push_to_db(SESSION, message, answer)
 
 
 @BOT.message_handler(func=lambda message: True)
@@ -148,7 +104,7 @@ def echo_message(message):
     if message.chat.id > 0:
         answer = finder(message.from_user.username, message.text)
         BOT.reply_to(message, answer)
-        push_to_db(message, answer)
+        db.push_to_db(SESSION, message, answer)
 
 def listener(messages):
     ''' service method for telebot class '''
