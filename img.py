@@ -27,6 +27,7 @@ class Img():
     TEXT_MAX_CHARS_PER_LINE = 30
     TEXT_STROKE_COLOR = 'black'
     TEXT_STROKE_WIDTH = 2
+    INSTA_BLUR = 50
 
     def __init__(self, path):
         self.last_three_pics_name = [1,2,3]
@@ -98,7 +99,7 @@ class Img():
         :returns: byte array of random image from pics list with text added
         '''
         img_rgb = await self._get_random_image()
-        img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(10))
+        img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.INSTA_BLUR))
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT), color=(0,0,0,0))
         draw = ImageDraw.Draw(text_rgb)
         text_utf8 = text.decode('utf-8')
