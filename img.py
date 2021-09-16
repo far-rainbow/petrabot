@@ -156,6 +156,8 @@ class Img():
         if splash:
             line = self.TEXT_BANKNAME[imgbankname]
             font_width, font_height = self.font_splash.getsize(line)
+            draw.text((self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET + 8, self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET + 8), line, (0, 0, 0),
+                      font=self.font_splash)
             draw.text((self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET, self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET), line, (255, 255, 255),
                       font=self.font_splash)
         img_rgb.paste(text_rgb,(0,0),text_rgb)
