@@ -16,16 +16,20 @@ class Img():
     MAX_WIDTH = 1920
     SQUARE_MAX_HEIGHT = 1080
     SQUARE_MAX_WIDTH = 1080
+    TEXT_MAIN_FONT = "Lobster-Regular.ttf"
     TEXT_FONT_SIZE = 80
     TEXT_FONT_SIZE_FALLBACK_1 = 70
     TEXT_FONT_SIZE_FALLBACK_2 = 60
-    H_OFFSET = 32
-    H_OFFSET_SHADOW = 40
+    TEXT_FONT_SIZE_SPLASH = 40
+    TEXT_BANKNAME = {'main':'@pavel_e_petrov','test':'@tihomirchikova'}
+    W_OFFSET = 32
+    W_OFFSET_SHADOW = 40
     TEXT_START_V_POS = 32
     TEXT_MAX_CHARS_PER_LINE = 30
     TEXT_STROKE_COLOR = 'black'
     TEXT_STROKE_WIDTH = 2
-    INSTA_BLUR = 20
+    MAIN_BLUR = 16
+    INSTA_BLUR = 1
 
     def __init__(self, *args):
         self.last_three_pics_name = [1,2,3]
@@ -35,11 +39,12 @@ class Img():
         self.pics['test'] = self._load_all_pics(args[1],
                                                 self.SQUARE_MAX_WIDTH,
                                                 self.SQUARE_MAX_HEIGHT)
-        self.font = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE)
-        self.font_fallback_1 = ImageFont.truetype("Lobster-Regular.ttf",
+        self.font = ImageFont.truetype(self.TEXT_MAIN_FONT, self.TEXT_FONT_SIZE)
+        self.font_fallback_1 = ImageFont.truetype(self.TEXT_MAIN_FONT,
                                                   self.TEXT_FONT_SIZE_FALLBACK_1)
-        self.font_fallback_2 = ImageFont.truetype("Lobster-Regular.ttf",
+        self.font_fallback_2 = ImageFont.truetype(self.TEXT_MAIN_FONT,
                                                   self.TEXT_FONT_SIZE_FALLBACK_2)
+        self.font_splash = ImageFont.truetype(self.TEXT_MAIN_FONT, self.TEXT_FONT_SIZE_SPLASH)
     @staticmethod
     def _load_all_pics(path,max_width,max_height):
         '''
@@ -89,20 +94,22 @@ class Img():
         '''
         :returns: deep copy of Image object to prevent original object modification
         '''
-        img = []
+        img = {}
         pic_name = None
         while 1:
-            for img_list in self.pics.values():
-                img.append(random.choice(img_list))
-            img = random.choice(img)
+            for img_k,img_v in self.pics.items():
+                img[img_k] = random.choice(img_v)
+            img_k = random.choice(list(img.keys()))
+            img = img[img_k]
+            img.bankname = img_k
             pic_name = img.filename
             if pic_name not in self.last_three_pics_name:
+                self.last_three_pics_name.append(pic_name)
+                del self.last_three_pics_name[0]
                 break
-        self.last_three_pics_name.append(pic_name)
-        del self.last_three_pics_name[0]
-        return deepcopy(img)
+        return img
 
-    async def get_random_image_with_text(self, text):
+    async def get_random_image_with_text(self, text, splash=True):
         '''
         Get random image from pics list, draw a text on it, convert it to JPEG
             and return a byte array of it to caller (send to Telegram API srv)
@@ -110,7 +117,12 @@ class Img():
         :returns: byte array of random image from pics list with text added
         '''
         img_rgb = await self._get_random_image()
-        img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.INSTA_BLUR))
+        if img_rgb.bankname=='main':
+            imgbankname = 'main'
+            img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.MAIN_BLUR))
+        else:
+            imgbankname = 'test'
+            img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.INSTA_BLUR))
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT), color=(0,0,0,0))
         draw = ImageDraw.Draw(text_rgb)
         text_utf8 = text.decode('utf-8').split('--',maxsplit=1)
@@ -124,22 +136,27 @@ class Img():
         for line in text_lines:
             font_line = self.font
             font_width, font_height = font_line.getsize(line)
-            if font_width > self.SQUARE_MAX_WIDTH - self.H_OFFSET_SHADOW:
+            if font_width > self.SQUARE_MAX_WIDTH - self.W_OFFSET_SHADOW:
                 font_line = self.font_fallback_1
                 font_width, font_height = font_line.getsize(line)
-            if font_width > self.SQUARE_MAX_WIDTH - self.H_OFFSET_SHADOW:
+            if font_width > self.SQUARE_MAX_WIDTH - self.W_OFFSET_SHADOW:
                 font_line = self.font_fallback_2
                 font_width, font_height = font_line.getsize(line)
             # draw text line shadow
-            draw.text((self.H_OFFSET_SHADOW, v_pos+10), line, (0, 0, 0),
+            draw.text((self.W_OFFSET_SHADOW, v_pos+10), line, (0, 0, 0),
                       font=font_line,stroke_width=self.TEXT_STROKE_WIDTH,
                       stroke_fill=self.TEXT_STROKE_COLOR)
             # draw text line
-            draw.text((self.H_OFFSET, v_pos), line, (255, 255, 255),
+            draw.text((self.W_OFFSET, v_pos), line, (255, 255, 255),
                       font=font_line,stroke_width=self.TEXT_STROKE_WIDTH,
                       stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
             v_pos += font_height
+        if splash:
+            line = self.TEXT_BANKNAME[imgbankname]
+            font_width, font_height = self.font_splash.getsize(line)
+            draw.text((self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET, self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET), line, (255, 255, 255),
+                      font=self.font_splash)
         img_rgb.paste(text_rgb,(0,0),text_rgb)
         img_rgb = img_rgb.crop((0,0,self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT))
         return self.get_bytes(img_rgb)
