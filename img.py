@@ -103,7 +103,7 @@ class Img():
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT), color=(0,0,0,0))
         draw = ImageDraw.Draw(text_rgb)
         text_utf8 = text.decode('utf-8').split('--',maxsplit=1)
-        if len(text_utf8>1):
+        if len(text_utf8) > 1:
             text = text_utf8[0]+'\n--'+text_utf8[1]
         else:
             text = text_utf8[0]
