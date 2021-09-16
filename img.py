@@ -104,6 +104,7 @@ class Img():
         draw = ImageDraw.Draw(text_rgb)
         text_utf8 = text.decode('utf-8').split('--',maxsplit=1)
         text = text_utf8[0]+'\n'+text_utf8[1]
+        print(f'>>> {text}')
         text_lines = textwrap.wrap(text, width=self.TEXT_MAX_CHARS_PER_LINE)
         v_pos = self.TEXT_START_V_POS
         for line in text_lines:
