@@ -16,7 +16,8 @@ class Img():
     MAX_WIDTH = 1920
     SQUARE_MAX_HEIGHT = 1080
     SQUARE_MAX_WIDTH = 1080
-    TEXT_MAIN_FONT = "Lobster-Regular.ttf"
+    TEXT_MAIN_FONT = "BalsamiqSans-Bold.ttf"
+    TEXT_SPLASH_FONT = "Lobster-Regular.ttf"
     TEXT_FONT_SIZE = 80
     TEXT_FONT_SIZE_FALLBACK_1 = 70
     TEXT_FONT_SIZE_FALLBACK_2 = 60
@@ -44,7 +45,7 @@ class Img():
                                                   self.TEXT_FONT_SIZE_FALLBACK_1)
         self.font_fallback_2 = ImageFont.truetype(self.TEXT_MAIN_FONT,
                                                   self.TEXT_FONT_SIZE_FALLBACK_2)
-        self.font_splash = ImageFont.truetype(self.TEXT_MAIN_FONT, self.TEXT_FONT_SIZE_SPLASH)
+        self.font_splash = ImageFont.truetype(self.TEXT_SPLASH_FONT, self.TEXT_FONT_SIZE_SPLASH)
     @staticmethod
     def _load_all_pics(path,max_width,max_height):
         '''
