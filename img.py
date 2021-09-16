@@ -16,32 +16,38 @@ class Img():
     MAX_WIDTH = 1920
     SQUARE_MAX_HEIGHT = 1080
     SQUARE_MAX_WIDTH = 1080
-    
     TEXT_FONT_SIZE = 80
     TEXT_FONT_SIZE_FALLBACK_1 = 70
     TEXT_FONT_SIZE_FALLBACK_2 = 60
     H_OFFSET = 32
     H_OFFSET_SHADOW = 40
-    
     TEXT_START_V_POS = 32
     TEXT_MAX_CHARS_PER_LINE = 30
     TEXT_STROKE_COLOR = 'black'
     TEXT_STROKE_WIDTH = 2
-    INSTA_BLUR = 25
+    INSTA_BLUR = 20
 
-    def __init__(self, path):
+    def __init__(self, *args):
         self.last_three_pics_name = [1,2,3]
-        self.pics = self._load_all_pics(path)
+        self.pics = {}
+        self.pics['main'] = self._load_all_pics(args[0],
+                                                self.MAX_WIDTH,self.MAX_HEIGHT)
+        self.pics['test'] = self._load_all_pics(args[1],
+                                                self.SQUARE_MAX_WIDTH,
+                                                self.SQUARE_MAX_HEIGHT)
         self.font = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE)
-        self.font_fallback_1 = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE_FALLBACK_1)
-        self.font_fallback_2 = ImageFont.truetype("Lobster-Regular.ttf", self.TEXT_FONT_SIZE_FALLBACK_2)
-    def _load_all_pics(self, path):
+        self.font_fallback_1 = ImageFont.truetype("Lobster-Regular.ttf",
+                                                  self.TEXT_FONT_SIZE_FALLBACK_1)
+        self.font_fallback_2 = ImageFont.truetype("Lobster-Regular.ttf",
+                                                  self.TEXT_FONT_SIZE_FALLBACK_2)
+    @staticmethod
+    def _load_all_pics(path,max_width,max_height):
         '''
         preload all images with onfly resizing to global width/height attrs
         :param dir path to fetch pics from
         :returns: a list with Image object loaded from path dir
         '''
-        pic_pathes = glob.glob(path + '*.jpg') + glob.glob(path + '*.png') + glob.glob(path + '*.webp')
+        pic_pathes = glob.glob(path + '*.jpg')+glob.glob(path + '*.png')+glob.glob(path + '*.webp')
         pics = []
         for _ in pic_pathes:
             ratio = 1
@@ -49,13 +55,13 @@ class Img():
             filename = img.filename
             print(f'{img.filename} {img.size} {img.format} loaded...')
             # explicit is better than implicit
-            if img.height > self.MAX_HEIGHT or img.width > self.MAX_WIDTH:
-                height_ratio = 1 / (img.height / self.MAX_HEIGHT)
-                width_ratio = 1 / (img.width / self.MAX_WIDTH)
+            if img.height > max_height or img.width > max_width:
+                height_ratio = 1 / (img.height / max_height)
+                width_ratio = 1 / (img.width / max_width)
                 ratio = min(height_ratio, width_ratio)
-            elif img.height < self.MAX_HEIGHT or img.width < self.MAX_WIDTH:
-                height_ratio = self.MAX_HEIGHT / img.height
-                width_ratio = self.MAX_WIDTH / img.width
+            elif img.height < max_height or img.width < max_width:
+                height_ratio = max_height / img.height
+                width_ratio = max_width / img.width
                 ratio = max(height_ratio, width_ratio)
             if ratio != 1:
                 img = img.resize(size=(int(img.width * ratio), int(img.height * ratio)))
@@ -83,13 +89,18 @@ class Img():
         '''
         :returns: deep copy of Image object to prevent original object modification
         '''
+        img = []
         pic_name = None
-        while pic_name in self.last_three_pics_name:
-            img = random.choice(self.pics)
+        while 1:
+            for img_list in self.pics.values():
+                img.append(random.choice(img_list))
+            img = random.choice(img)
             pic_name = img.filename
+            if pic_name not in self.last_three_pics_name:
+                break
         self.last_three_pics_name.append(pic_name)
         del self.last_three_pics_name[0]
-        return deepcopy(random.choice(self.pics))
+        return deepcopy(img)
 
     async def get_random_image_with_text(self, text):
         '''

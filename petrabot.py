@@ -15,6 +15,7 @@ load_dotenv()
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 IMG_PATH = ROOT_DIR + '/img/'
+IMG_PATH_SPEC = ROOT_DIR + '/tih/'
 API_TOKEN = os.environ['API_TOKEN']
 #GRP_TOKEN = os.environ['GRP_TOKEN']
 PROXYNUM = 32
@@ -34,7 +35,7 @@ Or just chat with BOT to get some fun...
 
 BOT = telebot.AsyncTeleBot(API_TOKEN)
 SESSION = db.get_session('sqlite:///db/petrabot.db')
-images = Img(IMG_PATH)
+images = Img(IMG_PATH,IMG_PATH_SPEC)
 
 
 def finder(uid, cmd=''):
