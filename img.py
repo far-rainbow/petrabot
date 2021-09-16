@@ -27,7 +27,7 @@ class Img():
     TEXT_MAX_CHARS_PER_LINE = 30
     TEXT_STROKE_COLOR = 'black'
     TEXT_STROKE_WIDTH = 2
-    INSTA_BLUR = 50
+    INSTA_BLUR = 25
 
     def __init__(self, path):
         self.last_three_pics_name = [1,2,3]
