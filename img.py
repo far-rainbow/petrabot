@@ -2,9 +2,7 @@
 import io
 import glob
 import random
-import logging
 import textwrap
-from copy import deepcopy
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 
@@ -22,9 +20,11 @@ class Img():
     TEXT_FONT_SIZE_FALLBACK_1 = 70
     TEXT_FONT_SIZE_FALLBACK_2 = 60
     TEXT_FONT_SIZE_SPLASH = 40
-    TEXT_BANKNAME = {'main':'@pavel_e_petrov','test':'@tihomirchikova'}
+    TEXT_BANKNAME = {'main':'@pavel_e_petrov', 'test':'@tihomirchikova'}
+    TEXT_SHADOW_BLUR = 20
     W_OFFSET = 32
     W_OFFSET_SHADOW = 40
+    H_OFFSET_SHADOW = 16
     TEXT_START_V_POS = 32
     TEXT_MAX_CHARS_PER_LINE = 30
     TEXT_STROKE_COLOR = 'black'
@@ -33,10 +33,10 @@ class Img():
     INSTA_BLUR = 1
 
     def __init__(self, *args):
-        self.last_three_pics_name = [1,2,3]
+        self.last_three_pics_name = [1, 2, 3]
         self.pics = {}
         self.pics['main'] = self._load_all_pics(args[0],
-                                                self.MAX_WIDTH,self.MAX_HEIGHT)
+                                                self.MAX_WIDTH, self.MAX_HEIGHT)
         self.pics['test'] = self._load_all_pics(args[1],
                                                 self.SQUARE_MAX_WIDTH,
                                                 self.SQUARE_MAX_HEIGHT)
@@ -47,7 +47,7 @@ class Img():
                                                   self.TEXT_FONT_SIZE_FALLBACK_2)
         self.font_splash = ImageFont.truetype(self.TEXT_SPLASH_FONT, self.TEXT_FONT_SIZE_SPLASH)
     @staticmethod
-    def _load_all_pics(path,max_width,max_height):
+    def _load_all_pics(path, max_width, max_height):
         '''
         preload all images with onfly resizing to global width/height attrs
         :param dir path to fetch pics from
@@ -93,13 +93,14 @@ class Img():
 
     async def _get_random_image(self):
         '''
-        :returns: deep copy of Image object to prevent original object modification
+        :returns: Image object
         '''
-        img = {}
         pic_name = None
         while 1:
-            for img_k,img_v in self.pics.items():
+            img = {}
+            for img_k, img_v in self.pics.items():
                 img[img_k] = random.choice(img_v)
+                print(f'>>> {img[img_k]}')
             img_k = random.choice(list(img.keys()))
             img = img[img_k]
             img.bankname = img_k
@@ -118,22 +119,25 @@ class Img():
         :returns: byte array of random image from pics list with text added
         '''
         img_rgb = await self._get_random_image()
-        if img_rgb.bankname=='main':
+        if img_rgb.bankname == 'main':
             imgbankname = 'main'
             img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.MAIN_BLUR))
         else:
             imgbankname = 'test'
             img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.INSTA_BLUR))
-        text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT), color=(0,0,0,0))
-        draw = ImageDraw.Draw(text_rgb)
-        text_utf8 = text.decode('utf-8').split('--',maxsplit=1)
-        print(f'>>> {text_utf8}')
+        text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
+                             color=(0, 0, 0, 0))
+        text_shadow = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
+                                color=(0, 0, 0, 0))
+        draw_rgb = ImageDraw.Draw(text_rgb)
+        draw_shadow = ImageDraw.Draw(text_shadow)
+        text_utf8 = text.decode('utf-8').split('--', maxsplit=1)
         if len(text_utf8) > 1:
             text = text_utf8[0]+('\n--'+text_utf8[1])
         else:
             text = text_utf8[0]
         text_lines = textwrap.wrap(text, width=self.TEXT_MAX_CHARS_PER_LINE)
-        v_pos = self.TEXT_START_V_POS
+        v_position = self.TEXT_START_V_POS
         for line in text_lines:
             font_line = self.font
             font_width, font_height = font_line.getsize(line)
@@ -143,23 +147,36 @@ class Img():
             if font_width > self.SQUARE_MAX_WIDTH - self.W_OFFSET_SHADOW:
                 font_line = self.font_fallback_2
                 font_width, font_height = font_line.getsize(line)
-            # draw text line shadow
-            draw.text((self.W_OFFSET_SHADOW, v_pos+10), line, (0, 0, 0),
-                      font=font_line,stroke_width=self.TEXT_STROKE_WIDTH,
-                      stroke_fill=self.TEXT_STROKE_COLOR)
-            # draw text line
-            draw.text((self.W_OFFSET, v_pos), line, (255, 255, 255),
-                      font=font_line,stroke_width=self.TEXT_STROKE_WIDTH,
-                      stroke_fill=self.TEXT_STROKE_COLOR)
+            # draw_rgb text line shadow
+            draw_shadow.text((self.W_OFFSET_SHADOW, v_position+self.H_OFFSET_SHADOW),
+                             line, (0, 0, 0),
+                             font=font_line, stroke_width=self.TEXT_STROKE_WIDTH,
+                             stroke_fill=self.TEXT_STROKE_COLOR)
+            # draw_rgb text line
+            draw_rgb.text((self.W_OFFSET, v_position), line, (255, 255, 255),
+                          font=font_line, stroke_width=self.TEXT_STROKE_WIDTH,
+                          stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
-            v_pos += font_height
+            v_position += font_height
+        text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
         if splash:
             line = self.TEXT_BANKNAME[imgbankname]
             font_width, font_height = self.font_splash.getsize(line)
-            draw.text((self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET + 8, self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET + 8), line, (0, 0, 0),
-                      font=self.font_splash)
-            draw.text((self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET, self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET), line, (255, 255, 255),
-                      font=self.font_splash)
-        img_rgb.paste(text_rgb,(0,0),text_rgb)
-        img_rgb = img_rgb.crop((0,0,self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT))
+            draw_rgb.text(
+                (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET + 8,
+                 self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET + 8),
+                line, (0, 0, 0),
+                font=self.font_splash)
+            draw_rgb.text(
+                (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET,
+                 self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
+                line, (255, 255, 255),
+                font=self.font_splash)
+        center = (self.SQUARE_MAX_HEIGHT - self.TEXT_START_V_POS - v_position)//2
+        img_rgb.paste(text_shadow, (0, center),
+                      text_shadow)
+        img_rgb.paste(text_rgb, (0, center),
+                      text_rgb)
+        img_rgb = img_rgb.crop((0, 0, self.SQUARE_MAX_WIDTH,
+                                self.SQUARE_MAX_HEIGHT))
         return self.get_bytes(img_rgb)
