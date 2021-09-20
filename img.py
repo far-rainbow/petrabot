@@ -128,9 +128,9 @@ class Img():
             imgbankname = 'test'
             img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.INSTA_BLUR))
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
-                             color='black')
+                             color=('black',0))
         text_shadow = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
-                                color='black')
+                                color=('black',0))
         draw_rgb = ImageDraw.Draw(text_rgb)
         draw_shadow = ImageDraw.Draw(text_shadow)
         
