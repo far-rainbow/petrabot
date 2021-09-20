@@ -136,9 +136,12 @@ class Img():
         draw_shadow = ImageDraw.Draw(text_shadow)
         
         if splash:
+            text_splash_shadow = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
+                                color=self.TEXT_COLOR_FULL_TRANSPARENT)
+            draw_splash_shadow = ImageDraw.Draw(text_splash_shadow)
             line = self.TEXT_BANKNAME[imgbankname]
             font_width, font_height = self.font_splash.getsize(line)
-            draw_shadow.text(
+            draw_splash_shadow.text(
                 (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET + 4,
                  self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET + 4),
                 line, fill=self.TEXT_SHADOW_COLOR,
@@ -148,9 +151,11 @@ class Img():
                  self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
                 line, fill=self.TEXT_COLOR,
                 font=self.font_splash)
+            # blur shadow layer
+            text_splash_shadow = text_splash_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
             # paste shadow layer
-            img_rgb.paste(text_shadow, (0, 0),
-                text_shadow)
+            img_rgb.paste(text_splash_shadow, (0, 0),
+                text_splash_shadow)
             # paste rgb layer 
             img_rgb.paste(text_rgb, (0, 0),
                 text_rgb)
