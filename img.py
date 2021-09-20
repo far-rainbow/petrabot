@@ -30,6 +30,7 @@ class Img():
     TEXT_COLOR = "white"
     TEXT_SHADOW_COLOR = "black"
     TEXT_STROKE_COLOR = 'chocolate'
+    TEXT_COLOR_FULL_TRANSPARENT = (0,0,0,0)
     TEXT_STROKE_WIDTH = 2
     MAIN_BLUR = 16
     INSTA_BLUR = 1
@@ -128,9 +129,9 @@ class Img():
             imgbankname = 'test'
             img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.INSTA_BLUR))
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
-                             color=('black',0))
+                             color=self.TEXT_COLOR_FULL_TRANSPARENT)
         text_shadow = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
-                                color=('black',0))
+                                color=self.TEXT_COLOR_FULL_TRANSPARENT)
         draw_rgb = ImageDraw.Draw(text_rgb)
         draw_shadow = ImageDraw.Draw(text_shadow)
         
