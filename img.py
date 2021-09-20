@@ -131,6 +131,19 @@ class Img():
                                 color=(0, 0, 0, 0))
         draw_rgb = ImageDraw.Draw(text_rgb)
         draw_shadow = ImageDraw.Draw(text_shadow)
+        if splash:
+            line = self.TEXT_BANKNAME[imgbankname]
+            font_width, font_height = self.font_splash.getsize(line)
+            draw_shadow.text(
+                (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET + 4,
+                 self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET + 4),
+                line, (0, 0, 0),
+                font=self.font_splash)
+            draw_rgb.text(
+                (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET,
+                 self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
+                line, (255, 255, 255),
+                font=self.font_splash)
         text_utf8 = text.decode('utf-8').split('--', maxsplit=1)
         if len(text_utf8) > 1:
             text = text_utf8[0]+('\n--'+text_utf8[1])
@@ -147,30 +160,17 @@ class Img():
             if font_width > self.SQUARE_MAX_WIDTH - self.W_OFFSET_SHADOW:
                 font_line = self.font_fallback_2
                 font_width, font_height = font_line.getsize(line)
-            # draw_rgb text line shadow
+            # draw text line shadow
             draw_shadow.text((self.W_OFFSET_SHADOW, v_position+self.H_OFFSET_SHADOW),
                              line, (0, 0, 0),
                              font=font_line, stroke_width=self.TEXT_STROKE_WIDTH,
                              stroke_fill=self.TEXT_STROKE_COLOR)
-            # draw_rgb text line
+            # draw text line
             draw_rgb.text((self.W_OFFSET, v_position), line, (255, 255, 255),
                           font=font_line, stroke_width=self.TEXT_STROKE_WIDTH,
                           stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
             v_position += font_height
-        if splash:
-            line = self.TEXT_BANKNAME[imgbankname]
-            font_width, font_height = self.font_splash.getsize(line)
-            draw_shadow.text(
-                (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET + 4,
-                 self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET + 4),
-                line, (0, 0, 0),
-                font=self.font_splash)
-            draw_rgb.text(
-                (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET,
-                 self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
-                line, (255, 255, 255),
-                font=self.font_splash)
         text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
         center = (self.SQUARE_MAX_HEIGHT - self.TEXT_START_V_POS - v_position)//2
         img_rgb.paste(text_shadow, (0, center),
