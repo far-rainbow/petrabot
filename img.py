@@ -145,6 +145,12 @@ class Img():
                  self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
                 line, (255, 255, 255),
                 font=self.font_splash)
+            # paste shadow layer
+            img_rgb.paste(text_shadow, (0, 0),
+                text_shadow)
+            # paste rgb layer 
+            img_rgb.paste(text_rgb, (0, 0),
+                text_rgb)
             
         text_utf8 = text.decode('utf-8').split('--', maxsplit=1)
         if len(text_utf8) > 1:
