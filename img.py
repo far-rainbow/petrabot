@@ -27,8 +27,8 @@ class Img():
     H_OFFSET_SHADOW = 16
     TEXT_START_V_POS = 32
     TEXT_MAX_CHARS_PER_LINE = 30
-    TEXT_COLOR = "white"
-    TEXT_SHADOW_COLOR = "black"
+    TEXT_COLOR = 'white'
+    TEXT_SHADOW_COLOR = 'black'
     TEXT_STROKE_COLOR = 'chocolate'
     TEXT_COLOR_FULL_TRANSPARENT = (0,0,0,0)
     TEXT_STROKE_WIDTH = 2
@@ -148,8 +148,6 @@ class Img():
                  self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
                 line, fill=self.TEXT_COLOR,
                 font=self.font_splash)
-            # blur shadow layer
-            text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
             # paste shadow layer
             img_rgb.paste(text_shadow, (0, 0),
                 text_shadow)
@@ -179,12 +177,12 @@ class Img():
                              font=font_line, stroke_width=self.TEXT_STROKE_WIDTH,
                              stroke_fill=self.TEXT_STROKE_COLOR)
             # draw text line
-            draw_rgb.text((self.W_OFFSET, v_position), line, fill=self.TEXT_COLOR,
+            draw_rgb.text((self.W_OFFSET, v_position),
+                          line, fill=self.TEXT_COLOR,
                           font=font_line, stroke_width=self.TEXT_STROKE_WIDTH,
                           stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
             v_position += font_height
-            
         # blur shadow layer
         text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
         # centring the layers via text height
