@@ -27,7 +27,9 @@ class Img():
     H_OFFSET_SHADOW = 16
     TEXT_START_V_POS = 32
     TEXT_MAX_CHARS_PER_LINE = 30
-    TEXT_STROKE_COLOR = 'black'
+    TEXT_COLOR = "white"
+    TEXT_SHADOW_COLOR = "black"
+    TEXT_STROKE_COLOR = 'chocolate'
     TEXT_STROKE_WIDTH = 2
     MAIN_BLUR = 16
     INSTA_BLUR = 1
@@ -126,9 +128,9 @@ class Img():
             imgbankname = 'test'
             img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.INSTA_BLUR))
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
-                             color=(0, 0, 0, 0))
+                             color='black')
         text_shadow = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
-                                color=(0, 0, 0, 0))
+                                color='black')
         draw_rgb = ImageDraw.Draw(text_rgb)
         draw_shadow = ImageDraw.Draw(text_shadow)
         
@@ -138,12 +140,12 @@ class Img():
             draw_shadow.text(
                 (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET + 4,
                  self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET + 4),
-                line, (0, 0, 0),
+                line, fill=self.TEXT_SHADOW_COLOR,
                 font=self.font_splash)
             draw_rgb.text(
                 (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET,
                  self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
-                line, (255, 255, 255),
+                line, fill=self.TEXT_COLOR,
                 font=self.font_splash)
             # blur shadow layer
             text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
@@ -172,11 +174,11 @@ class Img():
                 font_width, font_height = font_line.getsize(line)
             # draw text line shadow
             draw_shadow.text((self.W_OFFSET_SHADOW, v_position+self.H_OFFSET_SHADOW),
-                             line, (0, 0, 0),
+                             line, fill=self.TEXT_SHADOW_COLOR,
                              font=font_line, stroke_width=self.TEXT_STROKE_WIDTH,
                              stroke_fill=self.TEXT_STROKE_COLOR)
             # draw text line
-            draw_rgb.text((self.W_OFFSET, v_position), line, (255, 255, 255),
+            draw_rgb.text((self.W_OFFSET, v_position), line, fill=self.TEXT_COLOR,
                           font=font_line, stroke_width=self.TEXT_STROKE_WIDTH,
                           stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
