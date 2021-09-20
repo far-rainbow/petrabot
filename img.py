@@ -14,13 +14,13 @@ class Img():
     MAX_WIDTH = 1920
     SQUARE_MAX_HEIGHT = 1080
     SQUARE_MAX_WIDTH = 1080
-    TEXT_MAIN_FONT = "BalsamiqSans-Bold.ttf"
-    TEXT_SPLASH_FONT = "Lobster-Regular.ttf"
+    TEXT_MAIN_FONT = "fonts/BalsamiqSans-Bold.ttf"
+    TEXT_SPLASH_FONT = "fonts/Lobster-Regular.ttf"
     TEXT_FONT_SIZE = 80
     TEXT_FONT_SIZE_FALLBACK_1 = 70
     TEXT_FONT_SIZE_FALLBACK_2 = 60
     TEXT_FONT_SIZE_SPLASH = 40
-    TEXT_BANKNAME = {'main':'@pavel_e_petrov', 'test':'@tihomirchikova'}
+    TEXT_BANKNAME = {'main':'@pavel__petrov', 'test':'@tihomirchikova'}
     TEXT_SHADOW_BLUR = 20
     W_OFFSET = 32
     W_OFFSET_SHADOW = 40
@@ -158,13 +158,12 @@ class Img():
                           stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
             v_position += font_height
-        text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
         if splash:
             line = self.TEXT_BANKNAME[imgbankname]
             font_width, font_height = self.font_splash.getsize(line)
-            draw_rgb.text(
-                (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET + 8,
-                 self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET + 8),
+            draw_shadow.text(
+                (self.SQUARE_MAX_WIDTH - font_width - self.W_OFFSET + 4,
+                 self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET + 4),
                 line, (0, 0, 0),
                 font=self.font_splash)
             draw_rgb.text(
@@ -172,6 +171,7 @@ class Img():
                  self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
                 line, (255, 255, 255),
                 font=self.font_splash)
+        text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
         center = (self.SQUARE_MAX_HEIGHT - self.TEXT_START_V_POS - v_position)//2
         img_rgb.paste(text_shadow, (0, center),
                       text_shadow)
