@@ -131,6 +131,7 @@ class Img():
                                 color=(0, 0, 0, 0))
         draw_rgb = ImageDraw.Draw(text_rgb)
         draw_shadow = ImageDraw.Draw(text_shadow)
+        
         if splash:
             line = self.TEXT_BANKNAME[imgbankname]
             font_width, font_height = self.font_splash.getsize(line)
@@ -144,6 +145,7 @@ class Img():
                  self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
                 line, (255, 255, 255),
                 font=self.font_splash)
+            
         text_utf8 = text.decode('utf-8').split('--', maxsplit=1)
         if len(text_utf8) > 1:
             text = text_utf8[0]+('\n--'+text_utf8[1])
@@ -171,12 +173,18 @@ class Img():
                           stroke_fill=self.TEXT_STROKE_COLOR)
             # carriage return
             v_position += font_height
+            
+        # blur shadow layer
         text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
+        # centring the layers via text height
         center = (self.SQUARE_MAX_HEIGHT - self.TEXT_START_V_POS - v_position)//2
+        # paste shadow layer
         img_rgb.paste(text_shadow, (0, center),
                       text_shadow)
+        # paste rgb layer 
         img_rgb.paste(text_rgb, (0, center),
                       text_rgb)
+        # crop
         img_rgb = img_rgb.crop((0, 0, self.SQUARE_MAX_WIDTH,
                                 self.SQUARE_MAX_HEIGHT))
         return self.get_bytes(img_rgb)
