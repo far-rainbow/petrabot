@@ -180,7 +180,7 @@ class Img():
             draw_shadow.text((self.W_OFFSET_SHADOW, v_position+self.H_OFFSET_SHADOW),
                              line, fill=self.TEXT_SHADOW_COLOR,
                              font=font_line, stroke_width=self.TEXT_STROKE_WIDTH,
-                             stroke_fill=self.TEXT_STROKE_COLOR)
+                             stroke_fill=self.TEXT_SHADOW_COLOR)
             # draw text line
             draw_rgb.text((self.W_OFFSET, v_position),
                           line, fill=self.TEXT_COLOR,
