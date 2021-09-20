@@ -145,6 +145,8 @@ class Img():
                  self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
                 line, (255, 255, 255),
                 font=self.font_splash)
+            # blur shadow layer
+            text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
             # paste shadow layer
             img_rgb.paste(text_shadow, (0, 0),
                 text_shadow)
