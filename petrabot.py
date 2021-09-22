@@ -75,22 +75,30 @@ def send_welcome(message):
     ''' BOT commands logic '''
     if message.chat.id > 0:
         answer = None
-        if message.text == '/start':
+        cmd = message.text.split(' ')[0]
+        try:
+            arg = message.text.split(' ')[1]
+        except:
+            arg = None
+        if cmd == '/start':
             BOT.reply_to(message, START_MESSAGE)
-        elif message.text == '/help':
+        elif cmd == '/help':
             BOT.reply_to(message, HELP_MESSAGE)
-        elif message.text == '/stop':
+        elif cmd == '/stop':
             BOT.reply_to(message, 'Z-z-z-z...')
-        elif message.text == '/face':
+        elif cmd == '/face':
             BOT.send_photo(message.chat.id, asyncio.run(get_face()))
-        elif message.text == '/talk':
+        elif cmd == '/talk':
             answer = finder(message.from_user.username)
             BOT.reply_to(message, answer)
-        elif message.text == "/stats":
+        elif cmd == "/stats":
             answer = get_stats()
             BOT.reply_to(message, answer)
-        elif message.text == "/insta":
-            answer = finder(message.from_user.username)
+        elif cmd == "/insta":
+            if arg is None:
+                answer = finder(message.from_user.username)
+            else:
+                answer = finder(message.from_user.username, arg)
             photo = asyncio.run(images.get_random_image_with_text(answer))
             BOT.send_photo(message.chat.id, photo)
         db.push_to_db(SESSION, message, answer)
