@@ -314,6 +314,5 @@ class Img():
         for image in reversed(images):
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
             video.write(image)
-        cv2.destroyAllWindows()
         video.release()
         return open('tmp.mp4','rb')
