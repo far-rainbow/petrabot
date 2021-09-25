@@ -70,7 +70,7 @@ def get_stats():
         stats += bytes(f'>>     {name[0]}\n','utf-8')
     return stats
 
-@BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats', 'insta'])
+@BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats', 'insta', 'instavideo'])
 def send_welcome(message):
     ''' BOT commands logic '''
     if message.chat.id > 0:
@@ -100,6 +100,13 @@ def send_welcome(message):
             else:
                 answer = finder(message.from_user.username, arg)
             photo = asyncio.run(images.get_random_image_with_text(answer))
+            BOT.send_photo(message.chat.id, photo)
+        elif cmd == "/instavideo":
+            if arg is None:
+                answer = finder(message.from_user.username)
+            else:
+                answer = finder(message.from_user.username, arg)
+            photo = asyncio.run(images.get_random_video_with_text(answer))
             BOT.send_photo(message.chat.id, photo)
         db.push_to_db(SESSION, message, answer)
 
