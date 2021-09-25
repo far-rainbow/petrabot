@@ -3,7 +3,6 @@ import io
 import glob
 import random
 import textwrap
-from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import numpy
 import cv2
@@ -35,7 +34,7 @@ class Img():
     TEXT_COLOR = 'white'
     TEXT_SHADOW_COLOR = 'black'
     TEXT_STROKE_COLOR = 'chocolate'
-    TEXT_COLOR_FULL_TRANSPARENT = (0,0,0,0)
+    TEXT_COLOR_FULL_TRANSPARENT = (0, 0, 0, 0)
     TEXT_STROKE_WIDTH = 2
     MAIN_BLUR = 16
     INSTA_BLUR = 1
@@ -108,7 +107,6 @@ class Img():
             img = {}
             for img_k, img_v in self.pics.items():
                 img[img_k] = random.choice(img_v)
-                print(f'>>> {img[img_k]}')
             img_k = random.choice(list(img.keys()))
             img = img[img_k]
             img.bankname = img_k
@@ -118,9 +116,7 @@ class Img():
                 del self.last_three_pics_name[0]
                 break
         return img
-    
     async def get_image_with_text(self, text, img_rgb, splash=True, blur=TEXT_SHADOW_BLUR):
-        
         if img_rgb.bankname == 'main':
             imgbankname = 'main'
             img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.MAIN_BLUR))
@@ -134,10 +130,11 @@ class Img():
                                 color=self.TEXT_COLOR_FULL_TRANSPARENT)
         draw_rgb = ImageDraw.Draw(text_rgb)
         draw_shadow = ImageDraw.Draw(text_shadow)
-        
         if splash:
-            text_splash_shadow = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
-                                color=self.TEXT_COLOR_FULL_TRANSPARENT)
+            text_splash_shadow = Image.new(mode='RGBA',
+                                           size=(self.SQUARE_MAX_WIDTH,
+                                                 self.SQUARE_MAX_HEIGHT),
+                                           color=self.TEXT_COLOR_FULL_TRANSPARENT)
             draw_splash_shadow = ImageDraw.Draw(text_splash_shadow)
             line = self.TEXT_BANKNAME[imgbankname]
             font_width, font_height = self.font_splash.getsize(line)
@@ -154,11 +151,9 @@ class Img():
             # blur shadow layer
             text_splash_shadow = text_splash_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
             # paste shadow layer
-            img_rgb.paste(text_splash_shadow, (0, 0),
-                text_splash_shadow)
-            # paste rgb layer 
-            img_rgb.paste(text_rgb, (0, 0),
-                text_rgb)        
+            img_rgb.paste(text_splash_shadow, (0, 0), text_splash_shadow)
+            # paste rgb layer
+            img_rgb.paste(text_rgb, (0, 0), text_rgb)      
         text_utf8 = text.decode('utf-8').split('--', maxsplit=1)
         if len(text_utf8) > 1:
             text = text_utf8[0]+('\n--'+text_utf8[1])
@@ -194,14 +189,13 @@ class Img():
         # paste shadow layer
         img_rgb.paste(text_shadow, (0, center),
                       text_shadow)
-        # paste rgb layer 
+        # paste rgb layer
         img_rgb.paste(text_rgb, (0, center),
                       text_rgb)
         # crop
         img_rgb = img_rgb.crop((0, 0, self.SQUARE_MAX_WIDTH,
                                 self.SQUARE_MAX_HEIGHT))
         return img_rgb
-        
 
     async def get_random_image_with_text(self, text, splash=True, shadow_offset=None):
         '''
@@ -212,11 +206,10 @@ class Img():
         '''
         if shadow_offset is not None:
             W_OFFSET_SHADOW = shadow_offset
-            H_OFFSET_SHADOW = shadow_offset 
+            H_OFFSET_SHADOW = shadow_offset
         else:
             W_OFFSET_SHADOW = self.W_OFFSET_SHADOW
             H_OFFSET_SHADOW = self.H_OFFSET_SHADOW
-            
         img_rgb = await self._get_random_image()
         if img_rgb.bankname == 'main':
             imgbankname = 'main'
@@ -224,17 +217,17 @@ class Img():
         else:
             imgbankname = 'test'
             img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.INSTA_BLUR))
-            
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
                              color=self.TEXT_COLOR_FULL_TRANSPARENT)
         text_shadow = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
                                 color=self.TEXT_COLOR_FULL_TRANSPARENT)
         draw_rgb = ImageDraw.Draw(text_rgb)
         draw_shadow = ImageDraw.Draw(text_shadow)
-        
         if splash:
-            text_splash_shadow = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
-                                color=self.TEXT_COLOR_FULL_TRANSPARENT)
+            text_splash_shadow = Image.new(mode='RGBA',
+                                           size=(self.SQUARE_MAX_WIDTH,
+                                                 self.SQUARE_MAX_HEIGHT),
+                                           color=self.TEXT_COLOR_FULL_TRANSPARENT)
             draw_splash_shadow = ImageDraw.Draw(text_splash_shadow)
             line = self.TEXT_BANKNAME[imgbankname]
             font_width, font_height = self.font_splash.getsize(line)
@@ -251,12 +244,9 @@ class Img():
             # blur shadow layer
             text_splash_shadow = text_splash_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
             # paste shadow layer
-            img_rgb.paste(text_splash_shadow, (0, 0),
-                text_splash_shadow)
-            # paste rgb layer 
-            img_rgb.paste(text_rgb, (0, 0),
-                text_rgb)
-            
+            img_rgb.paste(text_splash_shadow, (0, 0), text_splash_shadow)
+            # paste rgb layer
+            img_rgb.paste(text_rgb, (0, 0), text_rgb)
         text_utf8 = text.decode('utf-8').split('--', maxsplit=1)
         if len(text_utf8) > 1:
             text = text_utf8[0]+('\n--'+text_utf8[1])
@@ -292,7 +282,7 @@ class Img():
         # paste shadow layer
         img_rgb.paste(text_shadow, (0, center),
                       text_shadow)
-        # paste rgb layer 
+        # paste rgb layer
         img_rgb.paste(text_rgb, (0, center),
                       text_rgb)
         # crop
@@ -306,8 +296,9 @@ class Img():
         images = []
         for frame in range(duration):
             print(f'Frame {frame} rendered')
-            images.append(await self.get_image_with_text(text, img_rgb, blur=frame))
-        video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), 25, (self.SQUARE_MAX_WIDTH,self.SQUARE_MAX_HEIGHT))
+            images.append(await self.get_image_with_text(text, img_rgb, splash=splash, blur=frame))
+        video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), 25,
+                                (self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT))
         for image in images:
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
             video.write(image)
@@ -315,4 +306,4 @@ class Img():
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
             video.write(image)
         video.release()
-        return open('tmp.mp4','rb')
+        return open('tmp.mp4', 'rb')
