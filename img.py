@@ -302,7 +302,7 @@ class Img():
 
     async def get_random_video_with_text(self, text, splash=True, duration=25):
         img_rgb = await self._get_random_image()
-        tmp_video_name = "tmp.avi"
+        tmp_video_name = "tmp.mp4"
         images = []
         for frame in range(duration):
             print(f'Frame {frame} rendered')
@@ -316,3 +316,4 @@ class Img():
             video.write(image)
         cv2.destroyAllWindows()
         video.release()
+        return open('tmp.mp4','rb')
