@@ -210,7 +210,7 @@ class Img():
         :param text: string to draw on image
         :returns: byte array of random image from pics list with text added
         '''
-        if w_shadow_offset is not None:
+        if shadow_offset is not None:
             W_OFFSET_SHADOW = shadow_offset
             H_OFFSET_SHADOW = shadow_offset 
         else:
