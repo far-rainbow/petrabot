@@ -310,7 +310,7 @@ class Img():
 
     async def get_random_video_with_text(self, text, splash=True, duration=25, framerate=25, rainbow=False):
         img_rgb = await self._get_random_image()
-        videofile_random_name = hashlib.md5(str(random.randrange(100000000,999999999)).encode())+".mp4"
+        videofile_random_name = hashlib.md5(str(random.randrange(100000000,999999999)).encode('utf-8'))+".mp4"
         tmp_video_name = self.VIDEO_DIR+videofile_random_name
         images = []
         for frame in range(duration):
