@@ -1,4 +1,11 @@
+/db/**
 /petrabot.db
 /.pydevproject
 /.project
-/petrabot
+/.env
+/__pycache__
+tmp/
+/tmp.avi
+/tmp.mp4
+/videos/**
+/frames/**

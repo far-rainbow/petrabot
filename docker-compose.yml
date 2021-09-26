@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  petrabot:
+    image: kamenka/petrabot:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+          cpus: '4.0'
+        reservations:
+          cpus: '1.0'
+          memory: 128M
+      placement:
+        constraints:
+          - "node.hostname==xubuntu-2"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - .:/app

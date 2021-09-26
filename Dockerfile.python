@@ -1,0 +1,11 @@
+FROM python:3.9-slim-bullseye
+WORKDIR /root
+COPY pip_upgrade_all.py requirements.txt ./
+RUN apt update && apt upgrade -y && \
+    apt install ffmpeg -y && \
+    apt install fortune -y && \
+    apt install fortunes-ru -y && \
+    apt install fortunes-bofh-excuses -y && \
+    pip3 install -r requirements.txt && \
+    python pip_upgrade_all.py && \
+    rm -rf /root/.cache /var/cache /var/lib
