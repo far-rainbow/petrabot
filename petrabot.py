@@ -106,8 +106,10 @@ def send_welcome(message):
                 answer = finder(message.from_user.username)
             else:
                 answer = finder(message.from_user.username, arg)
-            video = asyncio.run(images.get_random_video_with_text(answer))
+            video = asyncio.run(images.get_random_video_with_text(answer,
+                                                                  rainbow=True))
             BOT.send_video(message.chat.id, video)
+            del video
         db.push_to_db(SESSION, message, answer)
 
 

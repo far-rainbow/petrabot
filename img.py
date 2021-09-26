@@ -3,7 +3,7 @@ import io
 import glob
 import random
 import textwrap
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageColor
 import numpy
 import cv2
 
@@ -117,7 +117,22 @@ class Img():
                 del self.last_three_pics_name[0]
                 break
         return img
-    async def get_image_with_text(self, text, img_rgb, splash=True, blur=TEXT_SHADOW_BLUR):
+    
+    async def get_image_with_text(self,
+                                  text,
+                                  img_rgb,
+                                  splash=True,
+                                  blur=TEXT_SHADOW_BLUR,
+                                  stroke_color=TEXT_STROKE_COLOR):
+        '''
+        render one frame with predef background
+        :param text: str to render
+        :param img_rgb Image background
+        :param splash: True=on,False=off
+        :param blur: shadow blur strength
+        :param stroke_color: stroke color (R, G, B) or ImageColor.colormap key
+        :returns: Image object
+        '''
         if img_rgb.bankname == 'main':
             imgbankname = 'main'
             img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.MAIN_BLUR))
@@ -180,7 +195,7 @@ class Img():
             draw_rgb.text((self.W_OFFSET, v_position),
                           line, fill=self.TEXT_COLOR,
                           font=font_line, stroke_width=self.TEXT_STROKE_WIDTH,
-                          stroke_fill=self.TEXT_STROKE_COLOR)
+                          stroke_fill=stroke_color)
             # carriage return
             v_position += font_height
         # blur shadow layer
@@ -291,14 +306,22 @@ class Img():
                                 self.SQUARE_MAX_HEIGHT))
         return self.get_bytes_jpeg(img_rgb)
 
-    async def get_random_video_with_text(self, text, splash=True, duration=25):
+    async def get_random_video_with_text(self, text, splash=True, duration=25, framerate=25, rainbow=False):
         img_rgb = await self._get_random_image()
         tmp_video_name = "tmp.mp4"
         images = []
         for frame in range(duration):
             print(f'Frame {frame} rendered')
-            images.append(await self.get_image_with_text(text, img_rgb, splash=splash, blur=frame))
-        video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), 25,
+            if rainbow:
+                stroke_color = random.choice(list(ImageColor.colormap.values()))
+            else:
+                stroke_color = self.TEXT_STROKE_COLOR
+            images.append(await self.get_image_with_text(text,
+                                                         img_rgb,
+                                                         splash=splash,
+                                                         blur=frame,
+                                                         stroke_color=stroke_color))
+        video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
                                 (self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT))
         for image in reversed(images):
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
