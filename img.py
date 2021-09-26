@@ -314,7 +314,7 @@ class Img():
     async def get_random_video_with_text(self, text, splash=True, duration=25, framerate=25, rainbow=False):
         img_rgb = await self._get_random_image()
         videofile_random_name = hashlib.md5(str(random.randrange(100000000,999999999)).encode('utf-8'))
-        videofile_random_name = videofile_random_name.hexdigest()+".x264"
+        videofile_random_name = videofile_random_name.hexdigest()+".mp4"
         tmp_video_name = self.VIDEO_DIR+videofile_random_name
         images = []
         for frame in range(duration):
@@ -329,7 +329,7 @@ class Img():
                                                          splash=splash,
                                                          blur=frame,
                                                          stroke_color=stroke_color))
-        video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'X264'), framerate,
+        video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'XVID'), framerate,
                                 (self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT))
         for image in reversed(images):
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
