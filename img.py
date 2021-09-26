@@ -1,5 +1,6 @@
 ''' img lib class '''
 import io
+import hashlib
 import glob
 import random
 import textwrap
@@ -15,7 +16,8 @@ class Img():
     MAX_WIDTH = 1920
     SQUARE_MAX_HEIGHT = 1080
     SQUARE_MAX_WIDTH = 1080
-    FRAME_DIR = "frames"
+    FRAME_DIR = "frames/"
+    VIDEO_DIR = "videos/"
     TEXT_MAIN_FONT = "fonts/BalsamiqSans-Bold.ttf"
     TEXT_SPLASH_FONT = "fonts/Lobster-Regular.ttf"
     TEXT_FONT_SIZE = 80
@@ -308,7 +310,8 @@ class Img():
 
     async def get_random_video_with_text(self, text, splash=True, duration=25, framerate=25, rainbow=False):
         img_rgb = await self._get_random_image()
-        tmp_video_name = "tmp.mp4"
+        videofile_random_name = hashlib.md5(str(random.randrange(100000000,999999999)))+".mp4"
+        tmp_video_name = self.VIDEO_DIR+videofile_random_name
         images = []
         for frame in range(duration):
             print(f'Frame {frame} rendered')
@@ -330,4 +333,6 @@ class Img():
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
             video.write(image)
         video.release()
-        return open('tmp.mp4', 'rb')
+        print(f'Video rendered: {videofile_random_name}')
+        with open(tmp_video_name, 'rb') as videofile:
+            return videofile
