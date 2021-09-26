@@ -333,6 +333,7 @@ class Img():
         for image in images:
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
             video.write(image)
+        # TODO: ffmpeg -i yourvideo.avi -i sound.mp3 -c copy -map 0:v:0 -map 1:a:0 output.avi
         video.release()
         print(f'Video rendered: {tmp_video_name}')
         return open(tmp_video_name, 'rb')
