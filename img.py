@@ -347,6 +347,6 @@ class Img():
         sound = ffmpeg.input(self.SOUND_DIR+"usb.mp3")
         video = ffmpeg.input(tmp_video_name)
         joined = ffmpeg.concat(video,sound).node
-        out = ffmpeg.output(ffmpeg_tmp_video_name}').run()
+        out = ffmpeg.output(ffmpeg_tmp_video_name).run()
         out.run
         return ffmpeg_tmp_video_name
