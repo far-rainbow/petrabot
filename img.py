@@ -339,13 +339,14 @@ class Img():
             video.write(image)
         # ffmpeg -i yourvideo.avi -i sound.mp3 -c copy -map 0:v:0 -map 1:a:0 output.avi
         video.release()
-        tmp_video_name = self.add_mp3_to_video(tmp_video_name)
+        tmp_video_name = self.add_mp3_to_video(dir=self.VIDEO_DIR,file=videofile_random_name)
         print(f'Video rendered: {tmp_video_name}')
         return open(tmp_video_name, 'rb')
 
-    def add_mp3_to_video(self,tmp_video_name):
-        ffmpeg_tmp_video_name = f'{tmp_video_name}.ffmpeg'
+    @staticmethod
+    def add_mp3_to_video(dir,file):
+        ffmpeg_tmp_video_name = dir+'ffpmeg_'+file
         sound = ffmpeg.input(self.SOUND_DIR+"usb.mp3").audio
-        video = ffmpeg.input(tmp_video_name)
+        video = ffmpeg.input(dir+file)
         out = ffmpeg.concat(video, sound, v=1, a=1).output(ffmpeg_tmp_video_name).run()
         return ffmpeg_tmp_video_name
