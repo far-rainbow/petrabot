@@ -299,10 +299,10 @@ class Img():
             images.append(await self.get_image_with_text(text, img_rgb, splash=splash, blur=frame))
         video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), 25,
                                 (self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT))
-        for image in images:
+        for image in reversed(images):
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
             video.write(image)
-        for image in reversed(images):
+        for image in images:
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
             video.write(image)
         video.release()
