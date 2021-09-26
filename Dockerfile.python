@@ -6,4 +6,5 @@ RUN apt update && apt upgrade -y && \
     apt install fortunes-ru -y && \
     apt install fortunes-bofh-excuses -y && \
     pip3 install -r requirements.txt && \
-    python pip_upgrade_all.py
+    python pip_upgrade_all.py && \
+    rm -rf /root/.cache /var/cache /var/lib

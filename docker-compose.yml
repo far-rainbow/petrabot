@@ -7,15 +7,17 @@ services:
       replicas: 1
       resources:
         limits:
-          memory: 256M
+          memory: 1024M
           cpus: '4.0'
         reservations:
           cpus: '1.0'
           memory: 128M
+      placement:
+        constraints:
+          - "node.hostname==xubuntu-2"
     build:
       context: .
       dockerfile: Dockerfile
     restart: always
     volumes:
       - .:/app
-

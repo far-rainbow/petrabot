@@ -1,6 +1,7 @@
 all: python update
 
 python:
+	sudo apt install libgtk2.0-dev
 	docker build --no-cache --tag kamenka/petrabot:python -f Dockerfile.python .
 	docker image push kamenka/petrabot:python
 update:
