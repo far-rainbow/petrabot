@@ -329,7 +329,7 @@ class Img():
                                                          splash=splash,
                                                          blur=frame,
                                                          stroke_color=stroke_color))
-        video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
+        video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'x264'), framerate,
                                 (self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT))
         for image in reversed(images):
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
