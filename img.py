@@ -345,9 +345,7 @@ class Img():
 
     def add_mp3_to_video(self,tmp_video_name):
         ffmpeg_tmp_video_name = f'ffmpeg{tmp_video_name}'
-        sound = ffmpeg.input(self.SOUND_DIR+"usb.mp3")
+        sound = ffmpeg.input(self.SOUND_DIR+"usb.mp3").audio
         video = ffmpeg.input(tmp_video_name)
-        joined = ffmpeg.concat(video,sound).node
-        out = ffmpeg.output(ffmpeg_tmp_video_name).run()
-        out.run
+        out = ffmpeg.concat(video, sound, v=1, a=1).output(ffmpeg_tmp_video_name).run()
         return ffmpeg_tmp_video_name
