@@ -7,5 +7,5 @@
 tmp/
 /tmp.avi
 /tmp.mp4
-videos/**
-frames/**
+/videos/**
+/frames/**
