@@ -318,6 +318,7 @@ class Img():
         images = []
         for frame in range(duration):
             print(f'Frame {frame} rendered')
+            sys.stdout.flush()
             if rainbow:
                 stroke_color = random.choice(list(ImageColor.colormap.values()))
             else:
