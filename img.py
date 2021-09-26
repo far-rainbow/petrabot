@@ -329,7 +329,7 @@ class Img():
                                                          splash=splash,
                                                          blur=frame,
                                                          stroke_color=stroke_color))
-        video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'x264'), framerate,
+        video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'X264'), framerate,
                                 (self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT))
         for image in reversed(images):
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
@@ -347,5 +347,6 @@ class Img():
         ffmpeg_tmp_video_name = self.VIDEO_DIR+'ffpmeg_'+file
         sound = ffmpeg.input(self.SOUND_DIR+"usb.mp3").audio
         video = ffmpeg.input(self.VIDEO_DIR+file)
-        out = ffmpeg.concat(video, sound, v=1, a=1).output(ffmpeg_tmp_video_name).run()
+        out = ffmpeg.concat(video, sound, v=1, a=1).output(ffmpeg_tmp_video_name,
+                                                           vcodec='libx265').run()
         return ffmpeg_tmp_video_name
