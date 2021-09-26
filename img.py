@@ -7,6 +7,7 @@ import textwrap
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageColor
 import numpy
 import cv2
+import ffmpeg
 
 class Img():
     '''
@@ -18,6 +19,7 @@ class Img():
     SQUARE_MAX_WIDTH = 1080
     FRAME_DIR = "frames/"
     VIDEO_DIR = "videos/"
+    SOUND_DIR = "sounds/"
     TEXT_MAIN_FONT = "fonts/BalsamiqSans-Bold.ttf"
     TEXT_SPLASH_FONT = "fonts/Lobster-Regular.ttf"
     TEXT_FONT_SIZE = 80
@@ -333,7 +335,17 @@ class Img():
         for image in images:
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
             video.write(image)
-        # TODO: ffmpeg -i yourvideo.avi -i sound.mp3 -c copy -map 0:v:0 -map 1:a:0 output.avi
+        # ffmpeg -i yourvideo.avi -i sound.mp3 -c copy -map 0:v:0 -map 1:a:0 output.avi
         video.release()
+        tmp_video_name = self.add_mp3_to_video(tmp_video_name)
         print(f'Video rendered: {tmp_video_name}')
         return open(tmp_video_name, 'rb')
+
+    def add_mp3_to_video(self,tmp_video_name):
+        ffmpeg_tmp_video_name = f'ffmpeg{tmp_video_name}'
+        sound = ffmpeg.input(self.SOUND_DIR)
+        video = ffmpeg.input(tmp_video_name)
+        joined = ffmpeg.concat(video,sound).node
+        out = ffmpeg.output(ffmpeg_tmp_video_name}').run()
+        out.run
+        return ffmpeg_tmp_video_name
