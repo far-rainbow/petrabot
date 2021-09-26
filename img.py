@@ -85,7 +85,7 @@ class Img():
         return pics
 
     @staticmethod
-    def get_bytes(img, qlty=75):
+    def get_bytes_jpeg(img, qlty=75):
         '''
         convert Image into JPEG byte array
         :param img: Image obj to convert
@@ -100,6 +100,7 @@ class Img():
 
     async def _get_random_image(self):
         '''
+        choose random Image object from all the banks
         :returns: Image object
         '''
         pic_name = None
@@ -288,7 +289,7 @@ class Img():
         # crop
         img_rgb = img_rgb.crop((0, 0, self.SQUARE_MAX_WIDTH,
                                 self.SQUARE_MAX_HEIGHT))
-        return self.get_bytes(img_rgb)
+        return self.get_bytes_jpeg(img_rgb)
 
     async def get_random_video_with_text(self, text, splash=True, duration=25):
         img_rgb = await self._get_random_image()
