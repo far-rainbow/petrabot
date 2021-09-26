@@ -335,5 +335,4 @@ class Img():
             video.write(image)
         video.release()
         print(f'Video rendered: {tmp_video_name}')
-        with open(tmp_video_name, 'rb') as videofile:
-            return videofile
+        return open(tmp_video_name, 'rb')
