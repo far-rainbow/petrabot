@@ -1,5 +1,6 @@
 ''' img lib class '''
 import io
+import sys
 import hashlib
 import glob
 import random
