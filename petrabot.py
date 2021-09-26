@@ -107,6 +107,7 @@ def send_welcome(message):
             else:
                 answer = finder(message.from_user.username, arg)
             video = asyncio.run(images.get_random_video_with_text(answer,
+                                                                  repeats=4,
                                                                   rainbow=True))
             BOT.send_video(message.chat.id, video)
             del video
