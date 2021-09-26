@@ -110,6 +110,7 @@ def send_welcome(message):
                                                                   duration=60,
                                                                   framerate=60,
                                                                   repeats=4,
+                                                                  blur_max=30,
                                                                   rainbow=True))
             BOT.send_video(message.chat.id, video)
             del video

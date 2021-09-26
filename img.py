@@ -312,7 +312,9 @@ class Img():
         return self.get_bytes_jpeg(img_rgb)
 
     async def get_random_video_with_text(self, text, splash=True, duration=25,
-                                         framerate=25, repeats=1, rainbow=False):
+                                         framerate=25, repeats=1, blur_max = 30,
+                                         rainbow=False):
+        blur_coef = duration/blur_max
         img_rgb = await self._get_random_image()
         videofile_random_name = hashlib.md5(str(random.randrange(100000000,999999999)).encode('utf-8'))
         videofile_random_name = videofile_random_name.hexdigest()+".mp4"
@@ -328,7 +330,7 @@ class Img():
             images.append(await self.get_image_with_text(text,
                                                          img_rgb,
                                                          splash=splash,
-                                                         blur=frame,
+                                                         blur=frame//blur_coef,
                                                          stroke_color=stroke_color))
         video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
                                 (self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT))
