@@ -1,7 +1,8 @@
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-bullseye
 WORKDIR /root
 COPY pip_upgrade_all.py requirements.txt ./
 RUN apt update && apt upgrade -y && \
+    apt install ffmpeg -y && \
     apt install fortune -y && \
     apt install fortunes-ru -y && \
     apt install fortunes-bofh-excuses -y && \
