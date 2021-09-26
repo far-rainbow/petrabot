@@ -334,6 +334,6 @@ class Img():
             image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
             video.write(image)
         video.release()
-        print(f'Video rendered: {videofile_random_name}')
+        print(f'Video rendered: {tmp_video_name}')
         with open(tmp_video_name, 'rb') as videofile:
             return videofile
