@@ -108,7 +108,7 @@ def send_welcome(message):
                 answer = finder(message.from_user.username, arg)
             video = asyncio.run(images.get_random_video_with_text(answer,
                                                                   duration=30,
-                                                                  framerate=15,
+                                                                  framerate=30,
                                                                   repeats=15,
                                                                   blur_max=30,
                                                                   rainbow=True))
