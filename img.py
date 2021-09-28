@@ -130,8 +130,8 @@ class Img():
                                   splash=True,
                                   blur=TEXT_SHADOW_BLUR,
                                   stroke_color=TEXT_STROKE_COLOR,
-                                  text_resize=False,
-                                  bounce=1.0):
+                                  bounce=False,
+                                  bounce_k=1.0):
         '''
         render one frame with predef background
         :param text: str to render
@@ -216,9 +216,9 @@ class Img():
         img_rgb.paste(text_shadow, (0, center),
                       text_shadow)
         # paste rgb layer
-        if text_resize:
-                img_rgb.resize((img_rgb.width*bounce,
-                                img_rgb.height*bounce),
+        if bounce:
+                img_rgb.resize((img_rgb.width*bounce_k,
+                                img_rgb.height*bounce_k),
                                 Image.LANCZOS)
         img_rgb.paste(text_rgb, (0, center),
                       text_rgb)
@@ -323,13 +323,14 @@ class Img():
     async def get_random_video_with_text(self, text, splash=True, frames_num=25,
                                          framerate=25, repeats=1, blur_max = 30,
                                          rainbow=False, flashing=False, audio='',
-                                         bounce=1.0):
+                                         bounce=False,
+                                         bounce_k=1.0):
         '''
         :returns: video file -- random background with text and audio
         '''
         # one frame delta for each frame to reach full blur at the end of the range 
         blur_coef = frames_num/blur_max
-        bounce_coef = frames_num/bounce
+        bounce_coef = frames_num/bounce_k
         # get random background
         img_rgb = await self._get_random_image()
         # tmp file name
@@ -355,7 +356,8 @@ class Img():
                                                          splash=splash,
                                                          blur=frame//blur_coef,
                                                          stroke_color=stroke_color,
-                                                         bounce=frame/bounce_coef))
+                                                         bounce=True,
+                                                         bounce_k=frame/bounce_coef))
         # render video
         # TODO: move out into static method, args, video mode switch
         video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
