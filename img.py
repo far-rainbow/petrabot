@@ -218,8 +218,8 @@ class Img():
         # paste rgb layer
         if bounce:
                 width, height = text_rgb.size
-                text_rgb.resize((int(width*bounce_k),
-                                int(height*bounce_k)),
+                text_rgb.resize((int(width*1),
+                                int(height*1)),
                                 Image.LANCZOS)
         img_rgb.paste(text_rgb, (0, center),
                       text_rgb)
