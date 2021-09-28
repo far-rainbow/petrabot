@@ -331,7 +331,7 @@ class Img():
         '''
         # one frame delta for each frame to reach full blur at the end of the range 
         blur_coef = frames_num/blur_max
-        bounce_coef = 1 + frames_num/bounce_k
+        bounce_coef = frames_num/bounce_k
         # get random background
         img_rgb = await self._get_random_image()
         # tmp file name
@@ -358,7 +358,7 @@ class Img():
                                                          blur=frame//blur_coef,
                                                          stroke_color=stroke_color,
                                                          bounce=True,
-                                                         bounce_k=frame/bounce_coef))
+                                                         bounce_k=frame+1/bounce_coef))
         # render video
         # TODO: move out into static method, args, video mode switch
         video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
