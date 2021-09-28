@@ -1,6 +1,7 @@
 ''' img lib class '''
 import io
 import sys
+import time
 import hashlib
 import glob
 import random
@@ -311,46 +312,64 @@ class Img():
                                 self.SQUARE_MAX_HEIGHT))
         return self.get_bytes_jpeg(img_rgb)
 
-    async def get_random_video_with_text(self, text, splash=True, duration=25,
+    async def get_random_video_with_text(self, text, splash=True, frames_num=25,
                                          framerate=25, repeats=1, blur_max = 30,
-                                         rainbow=False):
-        blur_coef = duration/blur_max
+                                         rainbow=False, flashing=False, audio=None):
+        '''
+        :returns: video file -- random background with text and audio
+        '''
+        # one frame delta for each frame to reach full blur at the end of the range 
+        blur_coef = frames_num/blur_max
+        # get random background
         img_rgb = await self._get_random_image()
+        # tmp file name
         videofile_random_name = hashlib.md5(str(random.randrange(100000000,999999999)).encode('utf-8'))
-        videofile_random_name = videofile_random_name.hexdigest()+".mp4"
+        videofile_random_name = videofile_random_name.hexdigest()+f"{time.time()}.mp4"
+        # full tmp file path
         tmp_video_name = self.VIDEO_DIR+videofile_random_name
         images = []
-        for frame in range(duration):
+        for frame in range(frames_num):
+            # info log
+            # TODO: print thread/user info
             print(f'Frame {frame} rendered')
             sys.stdout.flush()
+            # change color every N-th frame if rainbow stroke is ON
+            # TODO: N-th frame delay, now it us every frame color change (too fast)
             if rainbow:
                 stroke_color = random.choice(list(ImageColor.colormap.values()))
             else:
                 stroke_color = self.TEXT_STROKE_COLOR
+            # render frame
             images.append(await self.get_image_with_text(text,
                                                          img_rgb,
                                                          splash=splash,
                                                          blur=frame//blur_coef,
                                                          stroke_color=stroke_color))
+        # render video
+        # TODO: move out into static method, args, video mode switch
         video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
                                 (self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT))
-        for repeat in range(repeats):
+        for _ in range(repeats):
             for image in reversed(images):
                 image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
                 video.write(image)
             for image in images:
                 image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
                 video.write(image)
-        # ffmpeg -i yourvideo.avi -i sound.mp3 -c copy -map 0:v:0 -map 1:a:0 output.avi
+        # write video
         video.release()
-        tmp_video_name = self.add_mp3_to_video(file=videofile_random_name)
+        # add audio into video (ffmpeg coz cv2 has no audio concat)
+        tmp_video_name = self.add_mp3_to_video(video=videofile_random_name,
+                                               audio=)
+        # info log
+        # TODO: print thread/user info
         print(f'Video rendered: {tmp_video_name}')
         return open(tmp_video_name, 'rb')
 
-    def add_mp3_to_video(self, file):
-        ffmpeg_tmp_video_name = self.VIDEO_DIR+'ffpmeg_'+file
-        sound = ffmpeg.input(self.SOUND_DIR+"100ways.mp3").audio
-        video = ffmpeg.input(self.VIDEO_DIR+file)
+    def add_mp3_to_video(self, video, audio):
+        ffmpeg_tmp_video_name = self.VIDEO_DIR+'ffpmeg_'+video
+        sound = ffmpeg.input(self.SOUND_DIR+audio).audio
+        video = ffmpeg.input(self.VIDEO_DIR+video)
         out = ffmpeg.concat(video, sound, v=1, a=1).output(ffmpeg_tmp_video_name,
                                                            vcodec='libx265').run()
         return ffmpeg_tmp_video_name

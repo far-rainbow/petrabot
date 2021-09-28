@@ -16,6 +16,7 @@ load_dotenv()
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 IMG_PATH = ROOT_DIR + '/img/'
 IMG_PATH_SPEC = ROOT_DIR + '/tih/'
+AUDIO_PATH = ROOT_DIR + '/audio/'
 API_TOKEN = os.environ['API_TOKEN']
 #GRP_TOKEN = os.environ['GRP_TOKEN']
 PROXYNUM = 32
@@ -106,14 +107,17 @@ def send_welcome(message):
                 answer = finder(message.from_user.username)
             else:
                 answer = finder(message.from_user.username, arg)
+            # bytes file
             video = asyncio.run(images.get_random_video_with_text(answer,
-                                                                  duration=30,
+                                                                  frames_length=30,
                                                                   framerate=30,
                                                                   repeats=15,
                                                                   blur_max=30,
-                                                                  rainbow=True))
+                                                                  rainbow=False,
+                                                                  flashing=True,
+                                                                  audio=AUDIO_PATH+'100ways.mp3'))
             BOT.send_video(message.chat.id, video)
-            del video
+            video.close
         db.push_to_db(SESSION, message, answer)
 
 
