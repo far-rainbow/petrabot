@@ -12,7 +12,7 @@ from img import Img
 import db
 
 # debug info
-print(f'Bot start: v.{time.time()}')
+print(f'Bot start: v.{time.time()}\n')
 
 # get env vars
 load_dotenv()
