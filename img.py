@@ -141,7 +141,7 @@ class Img():
         :param stroke_color: stroke color (R, G, B) or ImageColor.colormap key
         :returns: Image object
         '''
-        print(f'bounce_k=')
+        print(f'{bounce_k=}')
         if img_rgb.bankname == 'main':
             imgbankname = 'main'
             img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.MAIN_BLUR))
