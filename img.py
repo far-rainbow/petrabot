@@ -212,20 +212,22 @@ class Img():
         # blur shadow layer
         text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(blur))
         # centring the layers via text height
-        center = (self.SQUARE_MAX_HEIGHT - self.TEXT_START_V_POS - v_position)//2
+        h_center = (self.SQUARE_MAX_HEIGHT - self.TEXT_START_V_POS - v_position)//2
         # paste shadow layer
-        img_rgb.paste(text_shadow, (0, center),
+        img_rgb.paste(text_shadow, (0, h_center),
                       text_shadow)
         # paste rgb layer
+        pre_width, pre_height = (0, 0)
+        post_width, post_height = (0, 0)
         if bounce:
-                width, height = text_rgb.size
-                print(f'Pre-zoom {width} / {height}')
-                text_rgb = text_rgb.resize((int(width*bounce_k),
-                                int(height*bounce_k)),
+                pre_width, pre_height = text_rgb.size
+                print(f'Pre-zoom {pre_width} / {pre_height}')
+                text_rgb = text_rgb.resize((int(pre_width*bounce_k),
+                                int(pre_height*bounce_k)),
                                 Image.LANCZOS)
-                width, height = text_rgb.size
-                print(f'Post-zoom {width} / {height}')
-        img_rgb.paste(text_rgb, (0, center),
+                post_width, post_height = text_rgb.size
+                print(f'Post-zoom {post_width} / {post_height}')
+        img_rgb.paste(text_rgb, (-(post_width-pre_width)/2, h_center),
                       text_rgb)
         # crop
         img_rgb = img_rgb.crop((0, 0, self.SQUARE_MAX_WIDTH,
