@@ -360,13 +360,13 @@ class Img():
         video.release()
         # add audio into video (ffmpeg coz cv2 has no audio concat)
         tmp_video_name = self.add_mp3_to_video(video=videofile_random_name,
-                                               audio=)
+                                               audio=None)
         # info log
         # TODO: print thread/user info
         print(f'Video rendered: {tmp_video_name}')
         return open(tmp_video_name, 'rb')
 
-    def add_mp3_to_video(self, video, audio):
+    def add_mp3_to_video(self, video=None, audio=None):
         ffmpeg_tmp_video_name = self.VIDEO_DIR+'ffpmeg_'+video
         sound = ffmpeg.input(self.SOUND_DIR+audio).audio
         video = ffmpeg.input(self.VIDEO_DIR+video)
