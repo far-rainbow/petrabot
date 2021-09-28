@@ -141,6 +141,7 @@ class Img():
         :param stroke_color: stroke color (R, G, B) or ImageColor.colormap key
         :returns: Image object
         '''
+        print(f'bounce_k=')
         if img_rgb.bankname == 'main':
             imgbankname = 'main'
             img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.MAIN_BLUR))
@@ -329,7 +330,8 @@ class Img():
         '''
         :returns: video file -- random background with text and audio
         '''
-        # one frame delta for each frame to reach full blur at the end of the range 
+        # one frame delta for each frame to reach full blur at the end of the range
+        # TODO: zero blur 
         blur_coef = frames_num/blur_max
         bounce_coef = frames_num/bounce_k
         # get random background
@@ -357,8 +359,8 @@ class Img():
                                                          splash=splash,
                                                          blur=frame//blur_coef,
                                                          stroke_color=stroke_color,
-                                                         bounce=True,
-                                                         bounce_k=frame+1/bounce_coef))
+                                                         bounce=bounce,
+                                                         bounce_k=(frame+1)/bounce_coef))
         # render video
         # TODO: move out into static method, args, video mode switch
         video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
