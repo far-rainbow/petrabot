@@ -1,6 +1,7 @@
 ''' PetraBot Telegram bot logic | v.2 [18.06.2021] '''
 import os
 import sys
+import time
 import subprocess
 import asyncio
 import telebot
@@ -9,6 +10,9 @@ import httpx
 from dotenv import load_dotenv
 from img import Img
 import db
+
+# debug info
+print(f'Bot start: v.{time.time()}')
 
 # get env vars
 load_dotenv()
