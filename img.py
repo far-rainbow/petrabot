@@ -21,7 +21,7 @@ class Img():
     SQUARE_MAX_WIDTH = 1080
     FRAME_DIR = "frames/"
     VIDEO_DIR = "videos/"
-    SOUND_DIR = "sounds/"
+    SOUND_DIR = "audio/"
     TEXT_MAIN_FONT = "fonts/BalsamiqSans-Bold.ttf"
     TEXT_SPLASH_FONT = "fonts/Lobster-Regular.ttf"
     TEXT_FONT_SIZE = 80
@@ -314,7 +314,7 @@ class Img():
 
     async def get_random_video_with_text(self, text, splash=True, frames_num=25,
                                          framerate=25, repeats=1, blur_max = 30,
-                                         rainbow=False, flashing=False, audio=None):
+                                         rainbow=False, flashing=False, audio=''):
         '''
         :returns: video file -- random background with text and audio
         '''
@@ -360,13 +360,13 @@ class Img():
         video.release()
         # add audio into video (ffmpeg coz cv2 has no audio concat)
         tmp_video_name = self.add_mp3_to_video(video=videofile_random_name,
-                                               audio=None)
+                                               audio)
         # info log
         # TODO: print thread/user info
         print(f'Video rendered: {tmp_video_name}')
         return open(tmp_video_name, 'rb')
 
-    def add_mp3_to_video(self, video=None, audio=None):
+    def add_mp3_to_video(self, video, audio):
         ffmpeg_tmp_video_name = self.VIDEO_DIR+'ffpmeg_'+video
         sound = ffmpeg.input(self.SOUND_DIR+audio).audio
         video = ffmpeg.input(self.VIDEO_DIR+video)

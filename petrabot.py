@@ -115,7 +115,7 @@ def send_welcome(message):
                                                                   blur_max=30,
                                                                   rainbow=False,
                                                                   flashing=True,
-                                                                  audio=AUDIO_PATH+'100ways.mp3'))
+                                                                  audio='100ways.mp3'))
             BOT.send_video(message.chat.id, video)
             video.close
         db.push_to_db(SESSION, message, answer)
