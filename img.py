@@ -217,7 +217,7 @@ class Img():
                       text_shadow)
         # paste rgb layer
         if bounce:
-                width, height = text_rgb.shape
+                width, height = text_rgb.size
                 text_rgb.resize((int(width*bounce_k),
                                 int(height*bounce_k)),
                                 Image.LANCZOS)
