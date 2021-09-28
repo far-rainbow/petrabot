@@ -359,7 +359,7 @@ class Img():
         # write video
         video.release()
         # add audio into video (ffmpeg coz cv2 has no audio concat)
-        tmp_video_name = self.add_mp3_to_video(video=videofile_random_name,
+        tmp_video_name = self.add_mp3_to_video(videofile_random_name,
                                                audio)
         # info log
         # TODO: print thread/user info
