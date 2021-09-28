@@ -121,7 +121,7 @@ def send_welcome(message):
                                                                   flashing=True,
                                                                   audio='100ways.mp3',
                                                                   bounce=True,
-                                                                  bounce_k=1.5))
+                                                                  bounce_k=1.05))
             BOT.send_video(message.chat.id, video)
             video.close
         db.push_to_db(SESSION, message, answer)
