@@ -227,8 +227,9 @@ class Img():
                                 Image.LANCZOS)
                 post_width, post_height = text_rgb.size
                 print(f'Post-zoom {post_width} / {post_height}')
-        img_rgb.paste(text_rgb, (-(post_width-pre_width)//2, h_center),
-                      text_rgb)
+        img_rgb.paste(text_rgb, (-(post_width-pre_width)//2,
+                                 h_center - (post_height-pre_height)//2),
+                                 text_rgb)
         # crop
         img_rgb = img_rgb.crop((0, 0, self.SQUARE_MAX_WIDTH,
                                 self.SQUARE_MAX_HEIGHT))
