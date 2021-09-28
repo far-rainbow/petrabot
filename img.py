@@ -219,9 +219,12 @@ class Img():
         # paste rgb layer
         if bounce:
                 width, height = text_rgb.size
-                text_rgb.resize((int(width*bounce_k),
+                print(f'Pre-zoom {width} / {height}')
+                text_rgb = text_rgb.resize((int(width*bounce_k),
                                 int(height*bounce_k)),
                                 Image.LANCZOS)
+                width, height = text_rgb.size
+                print(f'Post-zoom {width} / {height}')
         img_rgb.paste(text_rgb, (0, center),
                       text_rgb)
         # crop
