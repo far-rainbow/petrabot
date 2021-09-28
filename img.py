@@ -355,7 +355,7 @@ class Img():
                                                          splash=splash,
                                                          blur=frame//blur_coef,
                                                          stroke_color=stroke_color,
-                                                         bounce=bounce_coef))
+                                                         bounce=frame/bounce_coef))
         # render video
         # TODO: move out into static method, args, video mode switch
         video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
