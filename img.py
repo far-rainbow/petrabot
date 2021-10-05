@@ -289,14 +289,22 @@ class Img():
         if len(text_utf8) > 1:
             text_body_wraped = ''
             text_body = text_utf8[0].split('\n')
-            for line in lines:
+            for line in text_body:
                 if len(line)>self.TEXT_MAX_CHARS_PER_LINE:
                     w = textwrap.TextWrapper(width=self.TEXT_MAX_CHARS_PER_LINE, break_long_words=False)
                     line = '\n'.join(w.wrap(line))
                 text_body_wraped += line + '\n'
             text = text_body_wraped+('\n--'+text_utf8[1])
         else:
+            text_body_wraped = ''
             text = text_utf8[0]
+            text_body = text_utf8[0].split('\n')
+            for line in text_body:
+                if len(line)>self.TEXT_MAX_CHARS_PER_LINE:
+                    w = textwrap.TextWrapper(width=self.TEXT_MAX_CHARS_PER_LINE, break_long_words=False)
+                    line = '\n'.join(w.wrap(line))
+                text_body_wraped += line + '\n'
+            text = text_body_wraped
         text_lines = textwrap.wrap(text, width=self.TEXT_MAX_CHARS_PER_LINE, replace_whitespace=False)
         print(f'TL: {text_lines}')
         v_position = self.TEXT_START_V_POS
