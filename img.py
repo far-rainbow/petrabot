@@ -310,7 +310,11 @@ class Img():
         v_position = self.TEXT_START_V_POS
         for line in text_lines:
             font_line = self.font
-            font_width, font_height = font_line.getsize(line)
+            if '\n' in line:
+                font_width, font_height = font_line.getsize(line)
+                font_height = font_height*2
+            else:
+                font_width, font_height = font_line.getsize(line)
             if font_width > self.SQUARE_MAX_WIDTH - W_OFFSET_SHADOW:
                 font_line = self.font_fallback_1
                 font_width, font_height = font_line.getsize(line)
