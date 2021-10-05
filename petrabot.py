@@ -79,10 +79,16 @@ def get_stats():
 def send_welcome(message):
     ''' BOT commands logic '''
     if message.chat.id > 0:
+        custom_text = None
         answer = None
         cmd = message.text.split(' ')[0]
         try:
             arg = message.text.split(' ')[1]
+            if arg == 'ct':
+                custom_text = True
+                words_list = message.text.split(' ')[2:]
+                arg = ' '.join(_ for _ in words_list)
+                print(f'CT: {arg}')
         except:
             arg = None
         if cmd == '/start':
@@ -103,14 +109,20 @@ def send_welcome(message):
             if arg is None:
                 answer = finder(message.from_user.username)
             else:
-                answer = finder(message.from_user.username, arg)
+                if custom_text is None:
+                    answer = finder(message.from_user.username, arg)
+                else:
+                    answer = bytes(arg,'utf-8')
             photo = asyncio.run(images.get_random_image_with_text(answer))
             BOT.send_photo(message.chat.id, photo)
         elif cmd == "/instavideo":
             if arg is None:
                 answer = finder(message.from_user.username)
             else:
-                answer = finder(message.from_user.username, arg)
+                if custom_text is None:
+                    answer = finder(message.from_user.username, arg)
+                else:
+                    answer = bytes(arg,'utf-8')
             # bytes file
             video = asyncio.run(images.get_random_video_with_text(answer,
                                                                   frames_num=25,

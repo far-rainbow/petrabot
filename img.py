@@ -36,7 +36,7 @@ class Img():
     W_SPLASH_OFFSET_SHADOW = 4
     H_SPLASH_OFFSET_SHADOW = 4
     TEXT_START_V_POS = 32
-    TEXT_MAX_CHARS_PER_LINE = 30
+    TEXT_MAX_CHARS_PER_LINE = 36
     TEXT_COLOR = 'white'
     TEXT_SHADOW_COLOR = 'black'
     TEXT_STROKE_COLOR = 'chocolate'
@@ -287,10 +287,18 @@ class Img():
             img_rgb.paste(text_rgb, (0, 0), text_rgb)
         text_utf8 = text.decode('utf-8').split('--', maxsplit=1)
         if len(text_utf8) > 1:
-            text = text_utf8[0]+('\n--'+text_utf8[1])
+            text_body_wraped = ''
+            text_body = text_utf8[0].split('\n')
+            for line in lines:
+                if len(line)>self.TEXT_MAX_CHARS_PER_LINE:
+                    w = textwrap.TextWrapper(width=self.TEXT_MAX_CHARS_PER_LINE, break_long_words=False)
+                    line = '\n'.join(w.wrap(line))
+                text_body_wraped += line + '\n'
+            text = text_body_wraped+('\n--'+text_utf8[1])
         else:
             text = text_utf8[0]
-        text_lines = textwrap.wrap(text, width=self.TEXT_MAX_CHARS_PER_LINE)
+        text_lines = textwrap.wrap(text, width=self.TEXT_MAX_CHARS_PER_LINE, replace_whitespace=False)
+        print(f'TL: {text_lines}')
         v_position = self.TEXT_START_V_POS
         for line in text_lines:
             font_line = self.font
