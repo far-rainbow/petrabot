@@ -15,11 +15,11 @@ pipeline {
                         usernameVariable: 'USER',
                         passwordVariable: 'PASSWORD'
                     )
-         ]) {
+        ]) {
               sh "docker login -u=$USER -p='$PASSWORD'"
               sh "docker ps -a"
-         }
-         sh "hostname"
+        }
+        sh "hostname"
       }
     }
   }
