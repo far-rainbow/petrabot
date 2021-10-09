@@ -27,6 +27,7 @@ class Img():
     TEXT_FONT_SIZE = 80
     TEXT_FONT_SIZE_FALLBACK_1 = 70
     TEXT_FONT_SIZE_FALLBACK_2 = 60
+    TEXT_FONT_SIZE_FALLBACK_3 = 50
     TEXT_FONT_SIZE_SPLASH = 40
     TEXT_BANKNAME = {'main':'@pavel__petrov', 'test':'@tihomirchikova'}
     TEXT_SHADOW_BLUR = 20
@@ -36,7 +37,7 @@ class Img():
     W_SPLASH_OFFSET_SHADOW = 4
     H_SPLASH_OFFSET_SHADOW = 4
     TEXT_START_V_POS = 32
-    TEXT_MAX_CHARS_PER_LINE = 40
+    TEXT_MAX_CHARS_PER_LINE = 20
     TEXT_COLOR = 'white'
     TEXT_SHADOW_COLOR = 'black'
     TEXT_STROKE_COLOR = 'chocolate'
@@ -58,6 +59,8 @@ class Img():
                                                   self.TEXT_FONT_SIZE_FALLBACK_1)
         self.font_fallback_2 = ImageFont.truetype(self.TEXT_MAIN_FONT,
                                                   self.TEXT_FONT_SIZE_FALLBACK_2)
+        self.font_fallback_3 = ImageFont.truetype(self.TEXT_MAIN_FONT,
+                                                  self.TEXT_FONT_SIZE_FALLBACK_3)
         self.font_splash = ImageFont.truetype(self.TEXT_SPLASH_FONT, self.TEXT_FONT_SIZE_SPLASH)
     @staticmethod
     def _load_all_pics(path, max_width, max_height):
@@ -307,8 +310,8 @@ class Img():
             #    text_body_wraped += line + '\n'
             #text = text_body_wraped
             text = text_utf8[0]
-        #text_lines = textwrap.wrap(text, width=self.TEXT_MAX_CHARS_PER_LINE, replace_whitespace=True)
-        text_lines = text.split('\n') 
+        text_lines = textwrap.wrap(text, width=self.TEXT_MAX_CHARS_PER_LINE, replace_whitespace=False)
+        #text_lines = text.split('\n')
         print(f'TL: {text_lines}')
         v_position = self.TEXT_START_V_POS
         for line in text_lines:
@@ -330,6 +333,13 @@ class Img():
                 if '\n' in line:
                     font_width, font_height = font_line.getsize(line)
                     font_height = font_height*2
+                else:
+                    font_width, font_height = font_line.getsize(line)
+            if font_width > self.SQUARE_MAX_WIDTH - W_OFFSET_SHADOW:
+                font_line = self.font_fallback_3
+                if '\n' in line:
+                    font_width, font_height = font_line.getsize(line)
+                    font_height = font_height*3
                 else:
                     font_width, font_height = font_line.getsize(line)
             # draw text line shadow
