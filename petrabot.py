@@ -53,7 +53,7 @@ def finder(uid, cmd=''):
             fortune = subprocess.check_output(
                 ['/usr/games/fortune', 'ru', '/usr/share/games/fortunes/'])
     else:
-        fortune = b'This is Windows OS. No fortune found...'
+        fortune = bytes(f'This is Windows OS.\nNo fortune found...\n{START_MESSAGE}','utf-8')
     return fortune
 
 
@@ -135,7 +135,7 @@ def send_welcome(message):
                                                                   bounce=True,
                                                                   bounce_k=1.05))
             BOT.send_video(message.chat.id, video)
-            video.close
+            video.closeфзш 
         db.push_to_db(SESSION, message, answer)
 
 

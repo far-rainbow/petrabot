@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('BUILD') {
       steps {
-        sh 'docker-compose build --pull --tag kamenka/petrabot'
+        sh 'make'
       }
     }
 
@@ -15,11 +15,11 @@ pipeline {
                         usernameVariable: 'USER',
                         passwordVariable: 'PASSWORD'
                     )
-         ]) {
+        ]) {
               sh "docker login -u=$USER -p='$PASSWORD'"
               sh "docker ps -a"
-         }
-         sh "docker push kamenka/petrabot:latest"
+        }
+        sh "hostname"
       }
     }
   }
