@@ -135,7 +135,7 @@ def send_welcome(message):
                                                                   bounce=True,
                                                                   bounce_k=1.05))
             BOT.send_video(message.chat.id, video)
-            video.closeфзш 
+            video.close()
         db.push_to_db(SESSION, message, answer)
 
 
