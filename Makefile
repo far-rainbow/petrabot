@@ -6,5 +6,5 @@ python:
 update:
 	git pull
 	docker build --tag kamenka/petrabot:latest .
-	docker image push kamenka/petrabot:latest
 	docker stack deploy -c docker-compose.yml petrabot
+	docker image push kamenka/petrabot:latest
