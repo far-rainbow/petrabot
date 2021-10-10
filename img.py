@@ -37,7 +37,7 @@ class Img():
     W_SPLASH_OFFSET_SHADOW = 4
     H_SPLASH_OFFSET_SHADOW = 4
     TEXT_START_V_POS = 32
-    TEXT_MAX_CHARS_PER_LINE = 20
+    TEXT_MAX_CHARS_PER_LINE = 30
     TEXT_COLOR = 'white'
     TEXT_SHADOW_COLOR = 'black'
     TEXT_STROKE_COLOR = 'chocolate'
