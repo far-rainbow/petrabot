@@ -131,7 +131,7 @@ def send_welcome(message):
                                                                   blur_max=30,
                                                                   rainbow=False,
                                                                   flashing=True,
-                                                                  audio='100ways.mp3',
+                                                                  audiofile='u96_piano.flac',
                                                                   bounce=True,
                                                                   bounce_k=1.05))
             BOT.send_video(message.chat.id, video)

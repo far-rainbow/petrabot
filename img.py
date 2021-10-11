@@ -9,7 +9,7 @@ import textwrap
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageColor
 import numpy
 import cv2
-import ffmpeg
+import audio
 
 class Img():
     '''
@@ -371,7 +371,7 @@ class Img():
 
     async def get_random_video_with_text(self, text, splash=True, frames_num=25,
                                          framerate=25, repeats=1, blur_max = 30,
-                                         rainbow=False, flashing=False, audio='',
+                                         rainbow=False, flashing=False, audiofile='',
                                          bounce=False,
                                          bounce_k=1.0):
         '''
@@ -421,17 +421,11 @@ class Img():
         # write video
         video.release()
         # add audio into video (ffmpeg coz cv2 has no audio concat)
-        tmp_video_name = self.add_mp3_to_video(videofile_random_name,
-                                               audio)
+        tmp_video_name = audio.add_mp3_to_video(videofile_random_name,
+                                               audiofile,
+                                               self.VIDEO_DIR,
+                                               self.SOUND_DIR)
         # info log
         # TODO: print thread/user info
         print(f'Video rendered: {tmp_video_name}')
         return open(tmp_video_name, 'rb')
-
-    def add_mp3_to_video(self, video, audio):
-        ffmpeg_tmp_video_name = self.VIDEO_DIR+'ffpmeg_'+video
-        sound = ffmpeg.input(self.SOUND_DIR+audio).audio
-        video = ffmpeg.input(self.VIDEO_DIR+video)
-        out = ffmpeg.concat(video, sound, v=1, a=1).output(ffmpeg_tmp_video_name,
-                                                           vcodec='libx265').run()
-        return ffmpeg_tmp_video_name
