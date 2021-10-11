@@ -21,9 +21,11 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 IMG_PATH = ROOT_DIR + '/img/'
 IMG_PATH_SPEC = ROOT_DIR + '/tih/'
 AUDIO_PATH = ROOT_DIR + '/audio/'
+VIDEO_PATH = ROOT_DIR + '/frames/'
 API_TOKEN = os.environ['API_TOKEN']
 #GRP_TOKEN = os.environ['GRP_TOKEN']
 PROXYNUM = 32
+THREADNUM = 1
 WIN32 = bool(sys.platform == 'win32')
 
 START_MESSAGE = '''
@@ -40,7 +42,7 @@ Or just chat with BOT to get some fun...
 
 BOT = telebot.AsyncTeleBot(API_TOKEN)
 SESSION = db.get_session('sqlite:///db/petrabot.db')
-images = Img(IMG_PATH,IMG_PATH_SPEC)
+images = Img(VIDEO_PATH,AUDIO_PATH,IMG_PATH,IMG_PATH_SPEC)
 
 
 def finder(uid, cmd=''):
@@ -133,7 +135,8 @@ def send_welcome(message):
                                                                   flashing=True,
                                                                   audiofile='u96_piano.flac',
                                                                   bounce=True,
-                                                                  bounce_k=1.025))
+                                                                  bounce_k=1.025,
+                                                                  THREADNUM=THREADNUM))
             BOT.send_video(message.chat.id, video)
             video.close()
         db.push_to_db(SESSION, message, answer)

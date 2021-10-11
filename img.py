@@ -2,6 +2,7 @@
 import io
 import sys
 import time
+import asyncio
 import hashlib
 import glob
 import random
@@ -20,8 +21,6 @@ class Img():
     SQUARE_MAX_HEIGHT = 1080
     SQUARE_MAX_WIDTH = 1080
     FRAME_DIR = "frames/"
-    VIDEO_DIR = "videos/"
-    SOUND_DIR = "audio/"
     TEXT_MAIN_FONT = "fonts/BalsamiqSans-Bold.ttf"
     TEXT_SPLASH_FONT = "fonts/Lobster-Regular.ttf"
     TEXT_FONT_SIZE = 80
@@ -46,7 +45,9 @@ class Img():
     MAIN_BLUR = 16
     INSTA_BLUR = 1
 
-    def __init__(self, *args):
+    def __init__(self, VIDEO_PATH, AUDIO_PATH, *args):
+        self.VIDEO_PATH = VIDEO_PATH
+        self.AUDIO_PATH = AUDIO_PATH
         self.last_three_pics_name = [1, 2, 3]
         self.pics = {}
         self.pics['main'] = self._load_all_pics(args[0],
@@ -62,6 +63,11 @@ class Img():
         self.font_fallback_3 = ImageFont.truetype(self.TEXT_MAIN_FONT,
                                                   self.TEXT_FONT_SIZE_FALLBACK_3)
         self.font_splash = ImageFont.truetype(self.TEXT_SPLASH_FONT, self.TEXT_FONT_SIZE_SPLASH)
+    @staticmethod
+    def chunklist(long_list, size_of_chunk):
+        ''' ГЕНЕРАТОР -- разбить список на список списков длинной size_of_chunk '''
+        for i in range(0, len(long_list), size_of_chunk):
+            yield long_list[i:i + size_of_chunk]
     @staticmethod
     def _load_all_pics(path, max_width, max_height):
         '''
@@ -373,7 +379,7 @@ class Img():
                                          framerate=25, repeats=1, blur_max = 30,
                                          rainbow=False, flashing=False, audiofile='',
                                          bounce=False,
-                                         bounce_k=1.0):
+                                         bounce_k=1.0,THREADNUM=2):
         '''
         :returns: video file -- random background with text and audio
         '''
@@ -386,27 +392,34 @@ class Img():
         videofile_random_name = hashlib.md5(str(random.randrange(100000000,999999999)).encode('utf-8'))
         videofile_random_name = videofile_random_name.hexdigest()+f"{time.time()}.mp4"
         # full tmp file path
-        tmp_video_name = self.VIDEO_DIR+videofile_random_name
+        tmp_video_name = self.VIDEO_PATH+videofile_random_name
         images = []
-        for frame in range(frames_num):
+        frame_range = range(frames_num)
+        frame_chunks = self.chunklist([*frame_range],THREADNUM)
+        for frameblock in frame_chunks:
             # info log
             # TODO: print thread/user info
-            print(f'Frame {frame} rendered')
+            print(f'Frames {frameblock} queued for render')
+            coros = []
+            for frame in frameblock:
+                # change color every N-th frame if rainbow stroke is ON
+                # TODO: N-th frame delay, now it us every frame color change (too fast)
+                if rainbow:
+                    stroke_color = random.choice(list(ImageColor.colormap.values()))
+                else:
+                    stroke_color = self.TEXT_STROKE_COLOR
+                # render frames
+                coros.append(self.get_image_with_text(text,
+                                                  img_rgb,
+                                                  splash=splash,
+                                                  blur=frame//blur_coef,
+                                                  stroke_color=stroke_color,
+                                                  bounce=bounce,
+                                                  bounce_k = numpy.linspace(1,bounce_k,frames_num)[frame]))
+            frames = await asyncio.gather(*coros)
+            for frame in frames:
+                images.append(frame)
             sys.stdout.flush()
-            # change color every N-th frame if rainbow stroke is ON
-            # TODO: N-th frame delay, now it us every frame color change (too fast)
-            if rainbow:
-                stroke_color = random.choice(list(ImageColor.colormap.values()))
-            else:
-                stroke_color = self.TEXT_STROKE_COLOR
-            # render frame
-            images.append(await self.get_image_with_text(text,
-                                                         img_rgb,
-                                                         splash=splash,
-                                                         blur=frame//blur_coef,
-                                                         stroke_color=stroke_color,
-                                                         bounce=bounce,
-                                                         bounce_k = numpy.linspace(1,bounce_k,frames_num)[frame]))
         # render video
         # TODO: move out into static method, args, video mode switch
         video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
@@ -423,8 +436,8 @@ class Img():
         # add audio into video (ffmpeg coz cv2 has no audio concat)
         tmp_video_name = audio.add_mp3_to_video(videofile_random_name,
                                                audiofile,
-                                               self.VIDEO_DIR,
-                                               self.SOUND_DIR)
+                                               self.VIDEO_PATH,
+                                               self.AUDIO_PATH)
         # info log
         # TODO: print thread/user info
         print(f'Video rendered: {tmp_video_name}')
