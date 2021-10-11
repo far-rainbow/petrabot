@@ -127,13 +127,13 @@ def send_welcome(message):
             video = asyncio.run(images.get_random_video_with_text(answer,
                                                                   frames_num=25,
                                                                   framerate=25,
-                                                                  repeats=15,
+                                                                  repeats=30,
                                                                   blur_max=30,
                                                                   rainbow=False,
                                                                   flashing=True,
                                                                   audiofile='u96_piano.flac',
                                                                   bounce=True,
-                                                                  bounce_k=1.05))
+                                                                  bounce_k=1.025))
             BOT.send_video(message.chat.id, video)
             video.close()
         db.push_to_db(SESSION, message, answer)
