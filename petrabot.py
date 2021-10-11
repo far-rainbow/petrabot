@@ -137,6 +137,7 @@ def send_welcome(message):
             BOT.send_video(message.chat.id, video)
             video.close()
         db.push_to_db(SESSION, message, answer)
+        sys.stdout.flush()
 
 
 @BOT.message_handler(func=lambda message: True)
