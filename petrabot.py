@@ -25,7 +25,7 @@ VIDEO_PATH = ROOT_DIR + '/frames/'
 API_TOKEN = os.environ['API_TOKEN']
 #GRP_TOKEN = os.environ['GRP_TOKEN']
 PROXYNUM = 32
-THREADNUM = 1
+THREADNUM = 16
 WIN32 = bool(sys.platform == 'win32')
 
 START_MESSAGE = '''

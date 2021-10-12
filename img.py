@@ -137,7 +137,8 @@ class Img():
                                   text,
                                   img_rgb,
                                   splash=True,
-                                  blur=TEXT_SHADOW_BLUR,
+                                  bg_blur=None,
+                                  shadow_blur=TEXT_SHADOW_BLUR,
                                   stroke_color=TEXT_STROKE_COLOR,
                                   bounce=False,
                                   bounce_k=1.0):
@@ -146,17 +147,21 @@ class Img():
         :param text: str to render
         :param img_rgb Image background
         :param splash: True=on,False=off
-        :param blur: shadow blur strength
+        :param shadow_blur: shadow blur strength
         :param stroke_color: stroke color (R, G, B) or ImageColor.colormap key
         :returns: Image object
         '''
         print(f'{bounce_k=}')
         if img_rgb.bankname == 'main':
             imgbankname = 'main'
-            img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.MAIN_BLUR))
+            if bg_blur is None:
+                bg_blur = self.MAIN_BLUR
+            img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(bg_blur))
         else:
             imgbankname = 'test'
-            img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(self.INSTA_BLUR))
+            if bg_blur is None:
+                bg_blur = self.INSTA_BLUR
+            img_rgb = img_rgb.filter(ImageFilter.GaussianBlur(bg_blur))
             
         text_rgb = Image.new(mode='RGBA', size=(self.SQUARE_MAX_WIDTH, self.SQUARE_MAX_HEIGHT),
                              color=self.TEXT_COLOR_FULL_TRANSPARENT)
@@ -182,7 +187,7 @@ class Img():
                  self.SQUARE_MAX_HEIGHT - font_height - self.W_OFFSET),
                 line, fill=self.TEXT_COLOR,
                 font=self.font_splash)
-            # blur shadow layer
+            # shadow_blur shadow layer
             text_splash_shadow = text_splash_shadow.filter(ImageFilter.GaussianBlur(self.TEXT_SHADOW_BLUR))
             # paste shadow layer
             img_rgb.paste(text_splash_shadow, (0, 0), text_splash_shadow)
@@ -218,8 +223,8 @@ class Img():
                           stroke_fill=stroke_color)
             # carriage return
             v_position += font_height
-        # blur shadow layer
-        text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(blur))
+        # shadow_blur shadow layer
+        text_shadow = text_shadow.filter(ImageFilter.GaussianBlur(shadow_blur))
         # centring the layers via text height
         h_center = (self.SQUARE_MAX_HEIGHT - self.TEXT_START_V_POS - v_position)//2
         # paste shadow layer
@@ -394,8 +399,7 @@ class Img():
         # full tmp file path
         tmp_video_name = self.VIDEO_PATH+videofile_random_name
         images = []
-        frame_range = range(frames_num)
-        frame_chunks = self.chunklist([*frame_range],THREADNUM)
+        frame_chunks = self.chunklist([*range(frames_num)],THREADNUM)
         for frameblock in frame_chunks:
             # info log
             # TODO: print thread/user info
@@ -412,7 +416,8 @@ class Img():
                 coros.append(self.get_image_with_text(text,
                                                   img_rgb,
                                                   splash=splash,
-                                                  blur=frame//blur_coef,
+                                                  bg_blur=frame//(blur_coef*2),
+                                                  shadow_blur=frame//blur_coef,
                                                   stroke_color=stroke_color,
                                                   bounce=bounce,
                                                   bounce_k = numpy.linspace(1,bounce_k,frames_num)[frame]))
