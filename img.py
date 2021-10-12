@@ -11,6 +11,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageColor
 import numpy
 import cv2
 import audio
+import concurrent.futures
 
 class Img():
     '''
@@ -133,7 +134,7 @@ class Img():
                 break
         return img
     
-    async def get_image_with_text(self,
+    def get_image_with_text(self,
                                   text,
                                   img_rgb,
                                   splash=True,
@@ -404,27 +405,32 @@ class Img():
             # info log
             # TODO: print thread/user info
             print(f'Frames {frameblock} queued for render')
-            coros = []
-            for frame in frameblock:
-                # change color every N-th frame if rainbow stroke is ON
-                # TODO: N-th frame delay, now it us every frame color change (too fast)
-                if rainbow:
-                    stroke_color = random.choice(list(ImageColor.colormap.values()))
-                else:
-                    stroke_color = self.TEXT_STROKE_COLOR
-                # render frames
-                coros.append(self.get_image_with_text(text,
-                                                  img_rgb,
-                                                  splash=splash,
-                                                  bg_blur=frame//(blur_coef*2),
-                                                  shadow_blur=frame//blur_coef,
-                                                  stroke_color=stroke_color,
-                                                  bounce=bounce,
-                                                  bounce_k = numpy.linspace(1,bounce_k,frames_num)[frame]))
-            frames = await asyncio.gather(*coros)
+            frames=[]
+            # change color every N-th frame if rainbow stroke is ON
+            # TODO: N-th frame delay, now it us every frame color change (too fast)
+            if rainbow:
+                stroke_color = random.choice(list(ImageColor.colormap.values()))
+            else:
+                stroke_color = self.TEXT_STROKE_COLOR
+            # render frames
+            with concurrent.futures.ThreadPoolExecutor(max_workers=THREADNUM) as pool:
+                frame_k = numpy.linspace(1,bounce_k,frames_num)
+                future_to_image = {pool.submit(self.get_image_with_text,
+                                               text,
+                                               img_rgb,
+                                               splash=splash,
+                                               bg_blur=frame//(blur_coef*2),
+                                               shadow_blur=frame//blur_coef,
+                                               stroke_color=stroke_color,
+                                               bounce=bounce,
+                                               bounce_k = frame_k[frame]): frame for frame in frameblock}
+                for future in concurrent.futures.as_completed(future_to_image):
+                    frames.append(future.result())
+                    sys.stdout.flush()
+            print(f'{frames=}')
             for frame in frames:
                 images.append(frame)
-            sys.stdout.flush()
+            print(f'{images=}')
         # render video
         # TODO: move out into static method, args, video mode switch
         video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
