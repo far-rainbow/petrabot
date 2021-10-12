@@ -431,6 +431,7 @@ class Img():
             for frame in frames:
                 images.append(frame)
             print(f'{images=}')
+        sys.stdout.flush()
         # render video
         # TODO: move out into static method, args, video mode switch
         video = cv2.VideoWriter(tmp_video_name, cv2.VideoWriter_fourcc(*'mp4v'), framerate,
