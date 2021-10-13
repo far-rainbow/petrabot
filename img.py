@@ -399,13 +399,12 @@ class Img():
         videofile_random_name = videofile_random_name.hexdigest()+f"{time.time()}.mp4"
         # full tmp file path
         tmp_video_name = self.VIDEO_PATH+videofile_random_name
-        images = []
+        images = [None] * frames_num
         frame_chunks = self.chunklist([*range(frames_num)],THREADNUM)
         for frameblock in frame_chunks:
             # info log
             # TODO: print thread/user info
             print(f'Frames {frameblock} queued for render')
-            frames=[]
             # change color every N-th frame if rainbow stroke is ON
             # TODO: N-th frame delay, now it us every frame color change (too fast)
             if rainbow:
@@ -425,12 +424,9 @@ class Img():
                                                bounce=bounce,
                                                bounce_k = frame_k[frame]): frame for frame in frameblock}
                 for future in concurrent.futures.as_completed(future_to_image):
-                    frames.append(future.result())
+                    images[future_to_image] = (future.result())
                     sys.stdout.flush()
-            print(f'{frames=}')
-            for frame in frames:
-                images.append(frame)
-            print(f'{images=}')
+        print(f'{images=}')
         sys.stdout.flush()
         # render video
         # TODO: move out into static method, args, video mode switch
