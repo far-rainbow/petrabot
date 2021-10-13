@@ -424,7 +424,7 @@ class Img():
                                                bounce=bounce,
                                                bounce_k = frame_k[frame]): frame for frame in frameblock}
                 for future in concurrent.futures.as_completed(future_to_image):
-                    images[future_to_image] = (future.result())
+                    images[future_to_image[future]] = (future.result())
                     sys.stdout.flush()
         print(f'{images=}')
         sys.stdout.flush()
