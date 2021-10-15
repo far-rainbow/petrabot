@@ -73,7 +73,7 @@ class Img():
     def _load_all_pics(path, max_width, max_height):
         '''
         preload all images with on-fly resizing to global width/height attrs
-        :param dir path to fetch pics from
+        :param path: dir path to fetch pics from
         :returns: a list with Image object loaded from path dir
         '''
         pic_pathes = glob.glob(path + '*.jpg')+glob.glob(path + '*.png')+glob.glob(path + '*.webp')
