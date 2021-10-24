@@ -73,7 +73,7 @@ class Img():
     def _load_all_pics(path, max_width, max_height):
         '''
         preload all images with on-fly resizing to global width/height attrs
-        :param dir path to fetch pics from
+        :param path: dir path to fetch pics from
         :returns: a list with Image object loaded from path dir
         '''
         pic_pathes = glob.glob(path + '*.jpg')+glob.glob(path + '*.png')+glob.glob(path + '*.webp')
@@ -413,6 +413,7 @@ class Img():
                 stroke_color = self.TEXT_STROKE_COLOR
             # render frames
             with concurrent.futures.ThreadPoolExecutor(max_workers=THREADNUM) as pool:
+                # why numpy but custom simple equation? coz there is a much numpy tasks in future versions...
                 frame_k = numpy.linspace(1,bounce_k,frames_num)
                 future_to_image = {pool.submit(self.get_image_with_text,
                                                text,
