@@ -127,8 +127,8 @@ def send_welcome(message):
                     answer = bytes(arg,'utf-8')
             # bytes file
             video = asyncio.run(images.get_random_video_with_text(answer,
-                                                                  frames_num=25,
-                                                                  framerate=25,
+                                                                  frames_num=30,
+                                                                  framerate=30,
                                                                   repeats=30,
                                                                   blur_max=30,
                                                                   rainbow=False,
