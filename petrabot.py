@@ -73,7 +73,7 @@ def get_stats():
     stats = bytes('%s %s\n' % (sys.executable or sys.platform, sys.version),'utf-8')
     stats += bytes(f'> unique users: {db.get_users_count(SESSION)}\n', 'utf-8')
     #TODO: refact into sub stats cmd
-    for name in db.get_users_name(SESSION):
+    for name in db.get_user_names(SESSION):
         stats += bytes(f'>>     {name[0]}\n','utf-8')
     return stats
 
@@ -133,7 +133,7 @@ def send_welcome(message):
                                                                   blur_max=30,
                                                                   rainbow=False,
                                                                   flashing=True,
-                                                                  audiofile='u96_piano.flac',
+                                                                  audiofile='Dual_Crew_Shining_and_Desire.wav',
                                                                   bounce=True,
                                                                   bounce_k=1.025,
                                                                   THREADNUM=THREADNUM))
