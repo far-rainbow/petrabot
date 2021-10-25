@@ -133,7 +133,7 @@ def send_welcome(message):
                                                                   blur_max=30,
                                                                   rainbow=False,
                                                                   flashing=True,
-                                                                  audiofile='Dual_Crew_Shining_and_Desire.wav',
+                                                                  audiofile='Dual_Crew_Shining_and_Desire.flac',
                                                                   bounce=True,
                                                                   bounce_k=1.025,
                                                                   THREADNUM=THREADNUM))
