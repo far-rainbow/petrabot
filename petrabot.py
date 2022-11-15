@@ -5,6 +5,7 @@ import time
 import subprocess
 import asyncio
 import telebot
+from telebot.async_telebot import AsyncTeleBot
 import httpx
 
 from dotenv import load_dotenv
@@ -40,7 +41,7 @@ Commands:
 Or just chat with BOT to get some fun...
 '''
 
-BOT = telebot.AsyncTeleBot(API_TOKEN)
+BOT = AsyncTeleBot(API_TOKEN)
 SESSION = db.get_session('sqlite:///db/petrabot.db')
 images = Img(VIDEO_PATH,AUDIO_PATH,IMG_PATH,IMG_PATH_SPEC)
 
@@ -55,7 +56,7 @@ def finder(uid, cmd=''):
             fortune = subprocess.check_output(
                 ['/usr/games/fortune', 'ru', '/usr/share/games/fortunes/'])
     else:
-        fortune = bytes(f'This is Windows OS.\nNo fortune found...\n{START_MESSAGE}','utf-8')
+        fortune = f'This is Windows OS.\nNo fortune found...\n{START_MESSAGE}'
     return fortune
 
 
@@ -68,17 +69,17 @@ async def get_face():
         return result.content
 
 
-def get_stats():
+async def get_stats():
     ''' unused statistic method '''
-    stats = bytes('%s %s\n' % (sys.executable or sys.platform, sys.version),'utf-8')
-    stats += bytes(f'> unique users: {db.get_users_count(SESSION)}\n', 'utf-8')
+    stats = '%s %s\n' % (sys.executable or sys.platform, sys.version)
+    stats += f'> unique users: {db.get_users_count(SESSION)}\n'
     #TODO: refact into sub stats cmd
     for name in db.get_user_names(SESSION):
-        stats += bytes(f'>>     {name[0]}\n','utf-8')
+        stats += f'>>     {name[0]}\n'
     return stats
 
 @BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats', 'insta', 'instavideo'])
-def send_welcome(message):
+async def send_welcome(message):
     ''' BOT commands logic '''
     if message.chat.id > 0:
         custom_text = None
@@ -94,19 +95,19 @@ def send_welcome(message):
         except:
             arg = None
         if cmd == '/start':
-            BOT.reply_to(message, START_MESSAGE)
+            await BOT.reply_to(message, START_MESSAGE)
         elif cmd == '/help':
-            BOT.reply_to(message, HELP_MESSAGE)
+            await BOT.reply_to(message, HELP_MESSAGE)
         elif cmd == '/stop':
-            BOT.reply_to(message, 'Z-z-z-z...')
+            await BOT.reply_to(message, 'Z-z-z-z...')
         elif cmd == '/face':
-            BOT.send_photo(message.chat.id, asyncio.run(get_face()))
+            await BOT.send_photo(message.chat.id, await get_face())
         elif cmd == '/talk':
             answer = finder(message.from_user.username)
-            BOT.reply_to(message, answer)
+            await BOT.reply_to(message, answer.decode('utf-8', 'ignore'))
         elif cmd == "/stats":
-            answer = get_stats()
-            BOT.reply_to(message, answer)
+            answer = await get_stats()
+            await BOT.reply_to(message, answer)
         elif cmd == "/insta":
             if arg is None:
                 answer = finder(message.from_user.username)
@@ -114,9 +115,9 @@ def send_welcome(message):
                 if custom_text is None:
                     answer = finder(message.from_user.username, arg)
                 else:
-                    answer = bytes(arg,'utf-8')
-            photo = asyncio.run(images.get_random_image_with_text(answer))
-            BOT.send_photo(message.chat.id, photo)
+                    answer = arg
+            photo = await images.get_random_image_with_text(answer)
+            await BOT.send_photo(message.chat.id, photo)
         elif cmd == "/instavideo":
             if arg is None:
                 answer = finder(message.from_user.username)
@@ -124,36 +125,35 @@ def send_welcome(message):
                 if custom_text is None:
                     answer = finder(message.from_user.username, arg)
                 else:
-                    answer = bytes(arg,'utf-8')
+                    answer = arg
             # bytes file
-            video = asyncio.run(images.get_random_video_with_text(answer,
-                                                                  frames_num=30,
-                                                                  framerate=30,
-                                                                  repeats=30,
-                                                                  blur_max=30,
-                                                                  rainbow=False,
-                                                                  flashing=True,
-                                                                  audiofile='Dual_Crew_Shining_and_Desire.flac',
-                                                                  bounce=True,
-                                                                  bounce_k=1.025,
-                                                                  THREADNUM=THREADNUM))
-            BOT.send_video(message.chat.id, video)
+            video = await images.get_random_video_with_text(answer,
+                                                      frames_num=30,
+                                                      framerate=25,
+                                                      repeats=30,
+                                                      blur_max=30,
+                                                      rainbow=False,
+                                                      flashing=True,
+                                                      audiofile='Dual_Crew_Shining_and_Desire.flac',
+                                                      bounce=True,
+                                                      bounce_k=1.025,
+                                                      THREADNUM=THREADNUM)
+            await BOT.send_video(message.chat.id, video)
             video.close()
         db.push_to_db(SESSION, message, answer)
         sys.stdout.flush()
 
-
 @BOT.message_handler(func=lambda message: True)
-def echo_message(message):
+async def echo_message(message):
     ''' user text logic '''
     if message.chat.id > 0:
         answer = finder(message.from_user.username, message.text)
-        BOT.reply_to(message, answer)
-        db.push_to_db(SESSION, message, answer)
+        await BOT.reply_to(message, answer.decode('utf-8','ignore'))
+        db.push_to_db(SESSION, message)
 
-def listener(messages):
+async def listener(messages):
     ''' service method for telebot class '''
     for msg in messages:
         print(str(msg))
 BOT.set_update_listener(listener)
-BOT.polling()
+asyncio.run(BOT.polling())

@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bullseye
+FROM python:3.9-slim
 WORKDIR /root
 COPY pip_upgrade_all.py requirements.txt ./
 RUN apt update && apt upgrade -y && \

@@ -29,7 +29,7 @@ class Img():
     TEXT_FONT_SIZE_FALLBACK_2 = 60
     TEXT_FONT_SIZE_FALLBACK_3 = 50
     TEXT_FONT_SIZE_SPLASH = 40
-    TEXT_BANKNAME = {'main':'@pavel__petrov', 'test':'@pavel__petrov'}
+    TEXT_BANKNAME = {'main':'@gratiavulgaris', 'test':'@gratiavulgaris'}
     TEXT_SHADOW_BLUR = 20
     W_OFFSET = 32
     W_OFFSET_SHADOW = 40
