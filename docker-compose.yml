@@ -20,4 +20,6 @@ services:
       dockerfile: Dockerfile
     restart: always
     volumes:
-      - .:/app
+      - ./videos:/app/videos
+      - ./frames:/app/frames
+      - ./db:/app/db
