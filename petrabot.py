@@ -1,4 +1,4 @@
-''' PetraBot Telegram bot logic | v.2.11 [30.04.2023] '''
+''' PetraBot Telegram bot logic | v.2.12 [30.04.2023] '''
 import os
 import sys
 import time
