@@ -1,4 +1,4 @@
-''' PetraBot Telegram bot logic | v.2.1 [11.12.2021] '''
+''' PetraBot Telegram bot logic | v.2.12 [30.04.2023] '''
 import os
 import sys
 import time
@@ -23,6 +23,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 IMG_PATH = ROOT_DIR + '/img/'
 IMG_PATH_SPEC = ROOT_DIR + '/tih/'
 AUDIO_PATH = ROOT_DIR + '/audio/'
+AUDIO_FILE = 'Dual_Crew_Shining_and_Desire.flac'
 VIDEO_PATH = ROOT_DIR + '/frames/'
 API_TOKEN = os.environ['API_TOKEN']
 #GRP_TOKEN = os.environ['GRP_TOKEN']
@@ -136,7 +137,7 @@ async def send_welcome(message):
                                                       blur_max=30,
                                                       rainbow=False,
                                                       flashing=True,
-                                                      audiofile='Dual_Crew_Shining_and_Desire.flac',
+                                                      audiofile=AUDIO_FILE,
                                                       bounce=True,
                                                       bounce_k=1.025,
                                                       THREADNUM=THREADNUM)
