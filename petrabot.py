@@ -18,6 +18,7 @@ print(f'Bot start: v.{time.time()}\n')
 # get env vars
 load_dotenv()
 
+VERSION = '1.1'
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 IMG_PATH = ROOT_DIR + '/img/'
 IMG_PATH_SPEC = ROOT_DIR + '/tih/'
@@ -72,10 +73,11 @@ async def get_face():
 async def get_stats():
     ''' unused statistic method '''
     stats = '%s %s\n' % (sys.executable or sys.platform, sys.version)
-    stats += f'> unique users: {db.get_users_count(SESSION)}\n'
+    stats += f'unique users: {db.get_users_count(SESSION)}\n'
     #TODO: refact into sub stats cmd
     for name in db.get_user_names(SESSION):
-        stats += f'>>     {name[0]}\n'
+        stats += f'{name[0]}\n'
+    stats += f'VERSION: {VERSION}'
     return stats
 
 @BOT.message_handler(commands=['help', 'start', 'stop', 'face', 'talk', 'stats', 'insta', 'instavideo'])
