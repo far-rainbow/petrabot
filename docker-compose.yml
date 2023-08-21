@@ -1,7 +1,7 @@
 version: "3.9"
 services:
-  petrabot:
-    image: kamenka/petrabot:latest
+  petrobot:
+    image: kamenka/petrobot:latest
     deploy:
       mode: replicated
       replicas: 1
@@ -14,7 +14,7 @@ services:
           memory: 512M
       placement:
         constraints:
-          - "node.hostname==xubuntu-2"
+          - "node.hostname==blender.kamenka.su"
       restart_policy:
         condition: on-failure
     build:
@@ -25,5 +25,5 @@ services:
       - ./frames:/app/frames
       - ./db:/app/db
     environment:
-      - PETRABOT_IMAGE_ID
+      - PETROBOT_IMAGE_ID
       - PYTHONUNBUFFERED=1

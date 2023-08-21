@@ -30,7 +30,7 @@ class MessageRecord(base):
     query = Column(String)
     answer = Column(String)
     time = Column(DateTime)
-    
+
 class SettingsRecord(base):
     ''' user settings '''
     __tablename__ = 'settings'
@@ -51,12 +51,10 @@ def get_session(path_to_db):
     return session
 
 def get_users_count(session):
-    mcnt = session.query(func.count(distinct(MessageRecord.name))).scalar()
-    return mcnt
+    return session.query(func.count(distinct(MessageRecord.name))).scalar()
 
 def get_user_names(session):
-    mnames = session.query(distinct(MessageRecord.name)).all()
-    return mnames
+    return session.query(distinct(MessageRecord.name)).all()
 
 def push_to_db(session, message, answer=None):
     ''' save username,query and BOT answer (optionaly) into db '''
