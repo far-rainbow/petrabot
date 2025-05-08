@@ -7,7 +7,7 @@ requests
 SQLAlchemy
 proxyscrape
 python-dotenv
-Pillow
+Pillow==9.5.0
 numpy
 opencv-python-headless
 ffmpeg-python
