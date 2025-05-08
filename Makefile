@@ -7,5 +7,5 @@ update:
 	git config pull.ff only
 	git pull
 	docker build --tag kamenka/petrobot:latest .
-	PETRABOT_IMAGE_ID=$$(docker images -q kamenka/petrobot:latest) docker stack deploy -c docker-compose.yml petrobot
+	PETRABOT_IMAGE_ID=$$(docker images -q kamenka/petrobot:latest) docker compose -f docker-compose.yml up -d
 	#docker image push kamenka/petrobot:latest
